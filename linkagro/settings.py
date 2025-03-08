@@ -96,9 +96,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',  # Usando o backend do MySQL
         'NAME': 'linkagro',      # Nome do banco de dados
         'USER': 'root',               # Usuário do MySQL
-        'PASSWORD': 'Gildo8503@',             # Senha do usuário
-        'HOST': 'localhost',                   # Ou o endereço do servidor MySQL
-        'PORT': '3306',                        # Porta do MySQL (padrão 3306)
+        'PASSWORD': 'AgPnZXKeKqnhhuQXYjXbRmSYgXNFtbij',             # Senha do usuário
+        'HOST': 'switchyard.proxy.rlwy.net',                   # Ou o endereço do servidor MySQL
+        'PORT': '330699',                        # Porta do MySQL (padrão 3306)
     }
 }
 
