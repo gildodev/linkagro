@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login e Cadastro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #00BF63, #00994D);
+            overflow: hidden;
+        }
+        .container {
+            position: relative;
+            width: 350px;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: transform 0.5s ease-in-out;
+        }
+        .container.hidden {
+            transform: scale(0);
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            padding-left: 40px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .input-group input:focus {
+            border-color: #00BF63;
+        }
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #777;
+        }
+        .btn {
+            width: 100%;
+            padding: 10px;
+            background: #00BF63;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #00994D;
+        }
+        .toggle-btn {
+            margin-top: 10px;
+            color: #00BF63;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .toggle-btn:hover {
+            text-decoration: underline;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container fade-in" id="login-box">
+        <h2>Entrar</h2>
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Usuário">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Senha">
+        </div>
+        <button class="btn">Login</button>
+        <p class="toggle-btn" onclick="toggleForm()">Não tem conta? Cadastre-se</p>
+    </div>
+
+    <div class="container hidden" id="register-box">
+        <h2>Cadastro</h2>
+        <div class="input-group">
+            <i class="fas fa-user"></i>
+            <input type="text" placeholder="Usuário">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-envelope"></i>
+            <input type="email" placeholder="Email">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-lock"></i>
+            <input type="password" placeholder="Senha">
+        </div>
+        <button class="btn">Cadastrar</button>
+        <p class="toggle-btn" onclick="toggleForm()">Já tem uma conta? Entre</p>
+    </div>
+
+    <script>
+        function toggleForm() {
+            let loginBox = document.getElementById('login-box');
+            let registerBox = document.getElementById('register-box');
+            loginBox.classList.toggle('hidden');
+            registerBox.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>

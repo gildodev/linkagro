@@ -1,0 +1,6 @@
+db.sqlite3
+activate.bat
+meuDB.txt
+run.bat
+reload_templates.bat
+

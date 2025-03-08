@@ -1,0 +1,209 @@
+{% extends "base/base.html" %}
+{% load static%}
+
+{% block content %}
+<style>
+.detalhe-produto {
+    position: relative;
+    width: 100%;
+    height: 415px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Imagem central */
+.imagem-centralizado-escolhido {
+    width: 150px;
+    height: 150px;
+    background-color: #4caf50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    overflow: hidden;
+    border: 1px solid #fff;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.3);
+}
+
+.imagem-centralizado-escolhido img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: fill;
+}
+
+/* Linha de conexão */
+.linha-conexao {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.linha-conexao path {
+    stroke: #4caf50;
+    stroke-width: 8;
+    fill: none;
+    stroke-dasharray: 10;
+    animation: mudarCor 3s infinite alternate;
+}
+
+@keyframes mudarCor {
+    0% { stroke: #4caf50; }
+    50% { stroke: #ff9800; }
+    100% { stroke: #2196F3; }
+}
+
+/* Contêiner para imagens circulares */
+.outras-imagem-circulares {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.outras-imagem-circulares img {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    object-fit: cover;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 3px solid white;
+}
+
+.outras-imagem-circulares img:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+}
+
+.outras-imagem-circulares img.selected {
+    border: 3px solid red;
+    box-shadow: 0px 0px 15px red;
+}
+</style>
+
+
+<section class="container my-3">
+    <div class="row">
+        <div class="col-md-5">
+            <div class="detalhe-produto shadow rounded-5">
+                <!-- Linha de conexão -->
+                <svg class="linha-conexao" viewBox="0 0 400 400">
+                    <path id="linha-svg" d=""></path>
+                </svg>
+            
+                <!-- Imagem central -->
+                <div class="imagem-centralizado-escolhido animate__animated animate__zoomIn">
+                    <img id="imagem-destaque" src="{{variedade.imagem_variedade.url}}" alt="Produto Principal">
+                </div>
+            
+                <!-- Imagens circulares ao redor -->
+                <div class="outras-imagem-circulares" id="imagens-container">
+                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 1" onclick="trocarImagem(this)">
+                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 2" onclick="trocarImagem(this)">
+                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 3" onclick="trocarImagem(this)">
+                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 4" onclick="trocarImagem(this)">
+                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 5" onclick="trocarImagem(this)">
+                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 6" onclick="trocarImagem(this)">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="descricao-variedade p-2 bg-linkagro">
+                <div class="sessao-titulo-variedade shadow text-center  p-2 rounded-2">
+                    <h3 class="text-primary-linkagro">{{variedade.nome_variedade}}</h3>
+                </div>
+
+                <div class="informacoes-complementares p-2 border-top">
+                    <div class="enderenco">
+                        <span><i class="fa fa-location-dot"></i> {{variedade.distrito.distrito}}, {{variedade.provincia.provincia}}</span>
+                    </div>
+                    <div class="descricao">
+                        <small>{{variedade.descricao_variedade}}</small>
+                    </div>
+                    <div class="preco">
+                        <h4>Preço:</h4>
+                        <span><Strong>{{variedade.preco_por_unidade}} MT</Strong>/{{variedade.quantidade_variedade}}{{variedade.unidade_variedade}}</span>
+                    </div>
+                    <div class="qualidade">
+                        <h4>Qualidade:</h4>
+                        <small>{{variedade.qualidade}}</small>
+                    </div>
+                    
+                </div>
+
+                <div class="border shadow d-flex justify-content-center flex-column">
+                    <div class="icon-shop text-success"><i class="fa fa-shop"></i></div>
+                    <p>Para comprar este produto contacte-nos por:</p>
+                    <div class="group-button-action">
+                        <a href="tel:258850386545"><i class="fa fa-call"></i> (+258) 85 03 86 545</a>
+                        <a href="hhh"><i class="fa fa-call"></i> (+258) 85 03 86 545</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<script>
+    function distribuirImagens() {
+        const imagens = document.querySelectorAll(".outras-imagem-circulares img");
+        const container = document.querySelector(".detalhe-produto");
+        const centroX = container.offsetWidth / 2;
+        const centroY = container.offsetHeight / 2;
+        const raio = 150; // Distância das imagens circulares ao centro
+        const totalImagens = imagens.length;
+
+        let pathData = `M ${centroX} ${centroY} `; // Inicia a linha SVG do centro
+
+        imagens.forEach((img, index) => {
+            const angulo = (index / totalImagens) * (2 * Math.PI); // Calcula o ângulo de cada imagem
+            const x = centroX + raio * Math.cos(angulo) - img.offsetWidth / 2;
+            const y = centroY + raio * Math.sin(angulo) - img.offsetHeight / 2;
+            
+            img.style.left = `${x}px`;
+            img.style.top = `${y}px`;
+
+            pathData += `L ${x + img.offsetWidth / 2} ${y + img.offsetHeight / 2} `; // Liga a linha SVG até a imagem
+        });
+
+        pathData += "Z"; // Fecha o caminho para conectar a última imagem à primeira
+        document.getElementById("linha-svg").setAttribute("d", pathData);
+    }
+
+    function trocarImagem(elemento) {
+        let imagemDestaque = document.getElementById("imagem-destaque");
+
+        // Remove a classe "selected" de todas as imagens circulares
+        document.querySelectorAll(".outras-imagem-circulares img").forEach(img => {
+            img.classList.remove("selected");
+        });
+
+        // Adiciona a classe "selected" à imagem clicada
+        elemento.classList.add("selected");
+
+        // Animação ao trocar a imagem
+        imagemDestaque.classList.add("animate__animated", "animate__zoomIn");
+
+        // Troca a imagem do centro
+        imagemDestaque.src = elemento.src;
+
+        // Remove a animação após 500ms para permitir outra troca
+        setTimeout(() => {
+            imagemDestaque.classList.remove("animate__animated", "animate__zoomIn");
+        }, 500);
+    }
+
+    window.onload = distribuirImagens;
+    window.onresize = distribuirImagens; // Redimensiona caso a tela mude de tamanho
+</script>
+
+{% endblock content %}

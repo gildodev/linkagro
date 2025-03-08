@@ -1,0 +1,6 @@
+# GET http://localhost:3000/api/variedades-produto/bananas/
+
+GET http://localhost:3000/api/produtos-categoria/frutas/
+
+
+

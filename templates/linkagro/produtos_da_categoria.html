@@ -1,0 +1,708 @@
+{% extends "base/base.html" %}
+{% load static%}
+
+{% block css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+{% endblock css %}
+
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+<script>
+    // Criação das variaveis
+    let regiaoID = null, provinciaID = null, distritoID = null, qualidade = null, ordenamento = null, verproduto=0, 
+     total_produtos=0, pagina_actual=0, total_paginas=0, proxima_pagina=0, pagina_anterior=0, ha_prox_pag=false, ha_pag_ant=false;
+
+
+    // Inicio de actividades
+    let regioes = [];
+    let provincias = [];
+    let distritos = [];
+    let variedades_activas=[];
+    let variedades=[];
+
+    let variedades_proximas_colheitas=[];
+    let localidades= [];
+    let slug_categoria=$('#slug_categoria').val()
+
+    let selectRegiao =null;
+    let selectProvincia = null;
+    let selectDistrito = null;
+
+    let verProduto = null;
+    let qualidadeProduto = null;
+    let ordenarPor = null;
+
+
+    // Verificar se o DOM está completamente carregado
+    $(document).ready(function() {
+        selectRegiao = new TomSelect("#selecione-Regiao", { create: false, sortField: "text", persist: false, placeholder: "Selecione a região...",});
+        selectProvincia = new TomSelect("#selecione-Provincia", { create: false, sortField: "text", persist: false, placeholder: "Selecione a provincia...",});
+        selectDistrito = new TomSelect("#selecione-Distrito", { create: false, sortField: "text", persist: false, placeholder: "Selecione o distrito...",});
+
+        verProduto = new TomSelect("#ver", { create: false, sortField: "text", persist: false, placeholder: "Ver produto...",});
+        qualidadeProduto = new TomSelect("#qualidade", { create: false, sortField: "text", persist: false, placeholder: "Filtrar por qualidade...",});
+        ordenarPor = new TomSelect("#ordenar", { create: false, sortField: "text", persist: false, placeholder: "Ordenar por...",});
+
+        // Activar lista de produtos
+        new Swiper('.card-anuncio .anuncio-content', {
+            loop: true, // Habilita o loop
+            slidesPerView: 1, // Mostra 1 slide por vez
+            spaceBetween: 10, // Espaçamento entre slides
+            effect: "flip" // Efeito flip
+        });
+
+
+        $(".menu-filtro-titulo").click(function(){
+            $(this).toggleClass("active");
+        });
+
+        $(".card-menu-header").click(function(){
+            
+            $(this).toggleClass("active");
+        });
+
+
+        loadData()
+        attachEventListeners()
+        setTimeout(function () {
+            $('.drawer').addClass('open');
+            document.querySelector('.empty-msg').style.opacity = 1;
+        }, 500);
+
+        console.log("O DOM foi carregado, agora você pode manipular os elementos.");
+    });
+
+
+    function attachEventListeners() {
+        selectRegiao.on("change", function () {
+            regiaoID = selectRegiao.getValue() || null;
+            updateProvincias(regiaoID);
+            aplicarFiltros();
+        });
+
+        selectProvincia.on("change", function () {
+            provinciaID = selectProvincia.getValue() || null;
+            updateDistritos(provinciaID);
+            aplicarFiltros();
+        });
+
+        selectDistrito.on("change", function () {
+            distritoID = selectDistrito.getValue() || null;
+            aplicarFiltros();
+        });
+
+        qualidadeProduto.on("change", function () {
+            qualidade = qualidadeProduto.getValue() || null;
+            aplicarFiltros();
+        });
+
+        ordenarPor.on("change", function () {
+            ordenamento = ordenarPor.getValue() || null;
+            aplicarFiltros();
+        });
+
+        verProduto.on("change", function () {
+            verproduto = verProduto.getValue() || null;
+            aplicarFiltros();
+        });
+
+        $("#proxima-pagina").click(function(){
+            loadDataPage(proxima_pagina)
+        })
+
+
+        $("#pagina-anterior").click(function(){
+            loadDataPage(pagina_anterior)
+        })
+
+
+
+    }
+
+    // Atualizar lista de províncias baseada na região selecionada
+    function updateProvincias(regiaoId) {
+        selectProvincia.clear();
+        selectProvincia.clearOptions();
+
+        let filteredProvincias = regiaoId ? provincias.filter(p => p.regiao_id == regiaoId) : provincias;
+        filteredProvincias.forEach(provincia => {
+            console.log(regiaoId==provincia.regiao_id)
+            selectProvincia.addOption({ value: provincia.id, text: provincia.provincia });
+        });
+
+        selectProvincia.enable();
+    }
+
+
+    // Atualizar lista de distritos baseada na província selecionada
+    function updateDistritos(provinciaId) {
+        selectDistrito.clear();
+        selectDistrito.clearOptions();
+
+        let filteredDistritos = provinciaId ? distritos.filter(d => d.provincia_id == provinciaId) : distritos;
+        filteredDistritos.forEach(distrito => {
+            selectDistrito.addOption({ value: distrito.id, text: distrito.distrito });
+        });
+
+        selectDistrito.enable();
+        
+    }
+    
+    
+    function aplicarFiltros() {
+        $('#loading-spinner').toggleClass("active")
+        let filtrados=[];
+        if(verproduto==0){
+            filtrados = variedades_activas.filter(item => 
+                (regiaoID ? item.id_regiao == regiaoID : true) &&
+                (provinciaID ? item.id_provincia == provinciaID : true) &&
+                (distritoID ? item.id_distrito == distritoID : true) &&
+                (qualidade ? item.qualidade_variedade == qualidade : true)
+            );
+
+        }else{
+            
+            filtrados = variedades_proximas_colheitas.filter(item => 
+                (regiaoID ? item.id_regiao == regiaoID : true) &&
+                (provinciaID ? item.id_provincia == provinciaID : true) &&
+                (distritoID ? item.id_distrito == distritoID : true) &&
+                (qualidade ? item.qualidade_variedade == qualidade : true)
+            );
+        }
+        
+        // Aplicar ordenamento
+        if (ordenamento) {
+            switch (ordenamento) {
+                case "nome_asc":
+                    filtrados.sort((a, b) => a.nome_variedade.localeCompare(b.nome_variedade));
+                    break;
+                case "nome_desc":
+                    filtrados.sort((a, b) => b.nome_variedade.localeCompare(a.nome_variedade));
+                    break;
+                case "preco_alto":
+                    filtrados.sort((a, b) => parseFloat(b.preco_por_unidade) - parseFloat(a.preco_por_unidade));
+                    break;
+                case "preco_baixo":
+                    filtrados.sort((a, b) => parseFloat(a.preco_por_unidade) - parseFloat(b.preco_por_unidade));
+                    break;
+            }
+        }
+
+        renderLista(filtrados);
+        $('#loading-spinner').toggleClass("active")
+    }
+    
+
+    function aplicarFiltrosPaginacao() {
+        $('#loading-spinner').toggleClass("active")
+        let filtrados=[];
+        if(verproduto==0){
+            filtrados = variedades_activas.filter(item => 
+                (regiaoID ? item.id_regiao == regiaoID : true) &&
+                (provinciaID ? item.id_provincia == provinciaID : true) &&
+                (distritoID ? item.id_distrito == distritoID : true) &&
+                (qualidade ? item.qualidade_variedade == qualidade : true)
+            );
+
+        }else{
+            
+            filtrados = variedades_proximas_colheitas.filter(item => 
+                (regiaoID ? item.id_regiao == regiaoID : true) &&
+                (provinciaID ? item.id_provincia == provinciaID : true) &&
+                (distritoID ? item.id_distrito == distritoID : true) &&
+                (qualidade ? item.qualidade_variedade == qualidade : true)
+            );
+        }
+        
+        // Aplicar ordenamento
+        if (ordenamento) {
+            switch (ordenamento) {
+                case "nome_asc":
+                    filtrados.sort((a, b) => a.nome_variedade.localeCompare(b.nome_variedade));
+                    break;
+                case "nome_desc":
+                    filtrados.sort((a, b) => b.nome_variedade.localeCompare(a.nome_variedade));
+                    break;
+                case "preco_alto":
+                    filtrados.sort((a, b) => parseFloat(b.preco_por_unidade) - parseFloat(a.preco_por_unidade));
+                    break;
+                case "preco_baixo":
+                    filtrados.sort((a, b) => parseFloat(a.preco_por_unidade) - parseFloat(b.preco_por_unidade));
+                    break;
+            }
+        }
+
+        renderListaPaginacao(filtrados);
+        $('#loading-spinner').toggleClass("active")
+    }
+    
+
+
+    function loadData() {
+        let slug_categoria = $('#slug_categoria').val();
+        $('#loading-spinner').toggleClass("active")
+
+
+        Promise.all([
+            $.get(`http://localhost:3000/api/produtos-categoria/${slug_categoria}/`),
+            $.get(`http://localhost:3000/api/enderecos-geograficos-produtores/`),
+            $.get(`http://localhost:3000/api/produtos-categoria/${slug_categoria}/proximas-colheitas/`),
+        ]).then(([produtosData, enderecosData, proximasColheitas]) => {
+            variedades_activas = produtosData.variedades_activas;
+            variedades_proximas_colheitas = proximasColheitas.variedades_proximas_colheitas;
+            total_produtos=produtosData.total_produtos;
+            total_paginas=produtosData.total_paginas;
+            proxima_pagina=produtosData.proxima_pagina;
+            pagina_anterior=produtosData.pagina_anterior;
+
+            ha_prox_pag=produtosData.ha_proxima_pagina;
+            ha_pag_ant=produtosData.ha_pagina_anterior;
+
+            
+            pagina_actual=produtosData.pagina_actual;
+            regioes = enderecosData.regioes;
+            provincias = enderecosData.provincias;
+            distritos = enderecosData.distritos;
+            localidades = enderecosData.localidades;
+
+            // Popular dropdowns
+            selectRegiao.clear();
+            selectRegiao.addOption({ value: "", text: "Todas" });
+            regioes.forEach(regiao => {
+                selectRegiao.addOption({ value: regiao.id, text: regiao.regiao });
+            });
+
+            selectProvincia.clear();
+            selectProvincia.disable();
+            selectDistrito.clear();
+            selectDistrito.disable();
+
+            aplicarFiltros();
+            $('#loading-spinner').toggleClass("active")
+            activarPaginacao();
+
+
+        }).catch(error => {
+            console.error("Erro ao carregar os dados:", error);
+            alert("Erro ao carregar os dados. Verifique a API!");
+        });
+    }
+
+
+    function activarPaginacao(){
+
+        if(ha_pag_ant || ha_prox_pag){
+            $(".page-linkagro").addClass("active")
+            if (ha_prox_pag){
+                $("#proxima-pagina").removeAttr("disabled")
+            }else{
+                $("#proxima-pagina").attr("disabled", true)
+            }
+
+            if (!ha_pag_ant){
+                $("#pagina-anterior").attr("disabled", true)
+            }else{
+                $("#pagina-anterior").removeAttr("disabled")
+            }
+
+            $("#pagina-actual").text(pagina_actual)
+
+            $("#total-paginas").text(total_paginas)
+        }else{
+            $(".page-linkagro").removeClass("active")
+        }
+
+        
+    }
+
+    function loadDataPage(pagina) {
+        let slug_categoria = $('#slug_categoria').val();
+        $('#loading-spinner').toggleClass("active")
+
+
+        Promise.all([
+            $.get(`http://localhost:3000/api/produtos-categoria/${slug_categoria}/?page=${pagina}`),
+            $.get(`http://localhost:3000/api/enderecos-geograficos-produtores/`),
+            $.get(`http://localhost:3000/api/produtos-categoria/${slug_categoria}/proximas-colheitas/`),
+        ]).then(([produtosData, enderecosData, proximasColheitas]) => {
+            variedades_activas = produtosData.variedades_activas;
+            variedades_proximas_colheitas = proximasColheitas.variedades_proximas_colheitas;
+            total_produtos=produtosData.total_produtos;
+            total_paginas=produtosData.total_paginas;
+            proxima_pagina=produtosData.proxima_pagina;
+            pagina_anterior=produtosData.pagina_anterior;
+            pagina_actual=produtosData.pagina_actual;
+
+            ha_prox_pag=produtosData.ha_proxima_pagina;
+            ha_pag_ant=produtosData.ha_pagina_anterior;
+
+            regioes = enderecosData.regioes;
+            provincias = enderecosData.provincias;
+            distritos = enderecosData.distritos;
+            localidades = enderecosData.localidades;
+
+            // Popular dropdowns
+            selectRegiao.clear();
+            selectRegiao.addOption({ value: "", text: "Todas" });
+            regioes.forEach(regiao => {
+                selectRegiao.addOption({ value: regiao.id, text: regiao.regiao });
+            });
+
+            selectProvincia.clear();
+            selectProvincia.disable();
+            selectDistrito.clear();
+            selectDistrito.disable();
+
+            aplicarFiltros();
+            $('#loading-spinner').toggleClass("active")
+            activarPaginacao()
+        }).catch(error => {
+            console.error("Erro ao carregar os dados:", error);
+            alert("Erro ao carregar os dados. Verifique a API!");
+        });
+    }
+
+
+    function renderLista(items) {
+        $("#variedades-container").html("");
+        if (items.length == 0){
+            $("#variedades-container").append(`
+                <div class="col-12 mb-3 animate__animated animate__zoomIn z-index-0">
+                    <div class="message-container">
+                        <h1>Ops! Nada encontrado...</h1>
+                        <p>Infelizmente, não temos produtos disponíveis neste momento. Mas não desanime!</p>
+                    
+                        <div class="drawer-container shadow">
+                            <div class="drawer"></div>
+                        </div>
+                    
+                        <div class="empty-msg">Produtos Indisponíveis!</div>
+                    </div>
+                </div>`
+            );
+
+            $('#btn-continuar-vendo-itens').addClass("d-none")
+            
+        }else{
+            
+            items.forEach(function(variedade) {
+                $("#variedades-container").append(`
+                    <div class="col-md-4 col-12 mb-3 animate__animated animate__zoomIn z-index-0">
+                        <a href="${variedade.detalhes_link}" title="${variedade.nome_variedade}">
+                            <div class="card-variedade">
+                                <div class="position-relative">
+                                    <div class="card-variedade-imagem p-2">
+                                        <img src="${variedade.imagem_default}" class="img-fluid" alt="${variedade.nome_variedade}">
+                                    </div>
+
+                                    <div class="card-variedade-conteudo mb-2">
+                                        <div class="card-variedade-mais-info px-2 pb-2">
+                                            <h5 class="card-variedade-titulo limite-texto-1">${variedade.nome_variedade} </h5>
+                                            <div class="precos text-primary">
+                                                <h3>${variedade.preco_por_unidade} MT
+                                                    <span>/ ${variedade.quantidade_variedade}${variedade.unidade_variedade}</span>
+                                                </h3>
+                                            </div>
+
+                                            <div class="qualidade d-none">
+                                                <span>Qualidade:</span><strong> ${variedade.qualidade_variedade}</strong>
+                                            </div>
+
+                                            <div class="localizacao ">
+                                                <span><i class="fa fa-location-dot"></i></span><span> ${variedade.distrito}</span>
+                                            </div>
+                                            ${verproduto==1?`<div class="epoca-colheita  text-success">
+                                                <span><i class="fa fa-calendar pe-2"></i></span><span> ${variedade.data_inicio_colheita}</span>
+                                            </div>`:``}
+                                            
+
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>`
+                );
+            });
+        }
+    }
+
+
+    function renderListaPaginacao(items) {
+       
+        if (items.length == 0){
+            $("#variedades-container").append(`
+                <div class="col-12 mb-3 animate__animated animate__zoomIn z-index-0">
+                    <div class="message-container">
+                        <h1>Ops! Nada encontrado...</h1>
+                        <p>Infelizmente, não temos produtos disponíveis neste momento. Mas não desanime!</p>
+                    
+                        <div class="drawer-container shadow">
+                            <div class="drawer"></div>
+                        </div>
+                    
+                        <div class="empty-msg">Produtos Indisponíveis!</div>
+                    </div>
+                </div>`
+            );
+
+            $('#btn-continuar-vendo-itens').addClass("d-none")
+            
+        }else{
+            
+            items.forEach(function(variedade) {
+                $("#variedades-container").append(`
+                    <div class="col-md-4 col-12 mb-3 animate__animated animate__zoomIn z-index-0">
+                        <a href="${variedade.detalhes_link}" title="${variedade.nome_variedade}">
+                            <div class="card-variedade">
+                                <div class="position-relative">
+                                    <div class="card-variedade-imagem p-2">
+                                        <img src="${variedade.imagem_default}" class="img-fluid" alt="${variedade.nome_variedade}">
+                                    </div>
+
+                                    <div class="card-variedade-conteudo mb-2">
+                                        <div class="card-variedade-mais-info px-2 pb-2">
+                                            <h5 class="card-variedade-titulo limite-texto-1">${variedade.nome_variedade} </h5>
+                                            <div class="precos text-primary">
+                                                <h3>${variedade.preco_por_unidade} MT
+                                                    <span>/ ${variedade.quantidade_variedade}${variedade.unidade_variedade}</span>
+                                                </h3>
+                                            </div>
+
+                                            <div class="qualidade d-none">
+                                                <span>Qualidade:</span><strong> ${variedade.qualidade_variedade}</strong>
+                                            </div>
+
+                                            <div class="localizacao ">
+                                                <span><i class="fa fa-location-dot"></i></span><span> ${variedade.distrito}</span>
+                                            </div>
+                                            ${verproduto==1?`<div class="epoca-colheita  text-success">
+                                                <span><i class="fa fa-calendar pe-2"></i></span><span> ${variedade.data_inicio_colheita}</span>
+                                            </div>`:``}
+                                            
+
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>`
+                );
+            });
+        }
+    }
+
+    // Verificar se a página inteira (com imagens, scripts, etc.) foi carregada
+    $(window).on('load', function() {
+        console.log("A página foi completamente carregada (incluindo imagens e outros recursos).");
+    });
+
+</script>
+{% endblock js %}
+
+
+{% block content %}
+<input type="hidden" name="slug_categoria" value="{{categoria.slug_categoria}}" id="slug_categoria">
+
+<section class="container my-3">
+    
+</section> 
+
+
+<section class="container mb-3">
+    <div class="row">
+        <div class="col-md-3 mb-2">
+            <div class="card-menu animate__animated animate__zoomIn mb-2">
+                <div class="card-menu-header rounded-top-3 px-2 active">
+                    <h3 class="text-gradient">Filtro</h3>
+
+                    <span class="text-gradient">
+                        <i class="fa fa-angle-right"></i>
+                    </span>
+                </div>
+
+                <ul class="menu-filtro pb-2">
+                    <li class="menu-filtro-item active">
+                        <span class="menu-filtro-titulo active">Categorias <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                        <ul class="submenu-filtro">
+                            {% for categ in categorias %}
+                            <li class="submenu-filtro-item"><a href="{% url 'linkagro_produtos_categoria' categ.slug_categoria %}" class="submenu-filtro-link">{{categ}}</a></li>
+                            {% endfor %}
+                            
+                        </ul>
+                    </li>
+                    <li class="menu-filtro-item">
+                        <span class="menu-filtro-titulo active">Produtos <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                        <ul class="submenu-filtro">
+                            {% for produto in produtos %}
+                            <li class="submenu-filtro-item"><a href="{% url 'linkagro_variedade_produto' produto.slug_produto %}" class="submenu-filtro-link">{{produto}} ({{produto.variedades_activas}})</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+
+                    <li class="menu-filtro-item">
+                        <span class="menu-filtro-titulo active">Qualidade <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                        <div class="submenu-filtro px-2">
+                            <select name="qualidade" id="qualidade" autocomplete="off" class="">
+                                <option value="">Filtrar por qualidade</option>
+                                <option value="Alta">Alta</option>
+                                <option value="Média">Média</option>
+                                <option value="Baixa">Baixa</option>
+                            </select>
+                        </div>
+                    </li>
+
+                    <li class="menu-filtro-item">
+                        <span class="menu-filtro-titulo active">Localização <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                        <div class="submenu-filtro px-2">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label for="">Selecione Região:</label>
+                                    <select id="selecione-Regiao" class="" autocomplete="off">
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="">Selecione Província:</label>
+                                    <select id="selecione-Provincia" class="" autocomplete="off">
+                                    </select>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="">Selecione Distrito:</label>
+                                    <select id="selecione-Distrito" class="" autocomplete="off">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="card-anuncio my-2 d-none">
+                <div class="anuncio-content">
+                    <div class="swiper-wrapper">
+                        {% for banner in banner %}
+                        <div class="swiper-slide">
+                            <div class="anuncio-items">
+                                <img src="{{banner.arquivo.url}}" alt="{{banner}}">
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <div class="sessao-banner-categoria container mb-3 py-2 animate__animated animate__zoomIn"  style="background-image: url({{categoria.banner_categoria.url}});">
+                <div class="sessao-banner-content">
+                    <div class="sessao-banner-title ">
+                        <div class="sessao-titulo">
+                            <h2 class="text-gradient">{{categoria}}</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-lista-produtos animate__animated animate__zoomIn">
+                <div class="card-lista-produtos-header shadow p-2  bg-white rounded-3 ">
+                    <div class="row">
+                        <div class="col-md-4 mb-2 ">
+                            <div class="ordqualver">
+                                <label for="ver">Ver: </label> 
+                                <select name="ver" id="ver" class="" autocomplete="off">
+                                    <option value="0">produtos activos</option>
+                                    <option value="1">próximas colheitas</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        
+
+                        <div class="col-md-4 mb-2">
+                            <div class="ordqualver">
+                                <label for="ordenar">Ordenar por:</label> 
+                                <select name="ordenar" id="ordenar" autocomplete="off" class="">
+                                    <option value="mais_vendido">Mais Vendido</option>
+                                    <option value="nome_asc">Nome (A-Z)</option>
+                                    <option value="nome_desc">Nome (Z-A)</option>
+                                    <option value="preco_alto">Preço (Maior)</option>
+                                    <option value="preco_baixo">Preço (Menor)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            
+
+                <div class="card-lista-produtos-body py-2">
+                    <div class="sessao-lista-produto">
+                        <div id="loading-spinner" class="text-center ">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Carregando...</span>
+                            </div>
+                        </div>
+
+                        <!-- Exibir as variedades -->
+                        <div id="variedades-container" class="row">
+                            <!-- Aqui as variedades serão exibidas dinamicamente -->
+                            <div class="col-12 d-none">
+                                <div class="message-container">
+                                    <h1>Ops! Nada encontrado...</h1>
+                                    <p>Infelizmente, não temos produtos disponíveis neste momento. Mas não desanime!</p>
+                                
+                                    <div class="drawer-container shadow">
+                                        <div class="drawer"></div>
+                                    </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                
+
+                <div class="card-lista-produtos-footer text-center">
+                    
+                    <div class="page-linkagro ">
+                        <button id="pagina-anterior" class="btn btn-outline-warning pagina-anterior rounded-5"><i class="fa fa-angle-double-left"></i></button>
+                        <div class="nomeacao-pagina">
+                            <span id="pagina-actual" class="pagina-actual">1</span>
+                            de
+                            <span id="total-paginas">0</span>
+
+                            Paginas(s)
+                        </div>
+                        <button id="proxima-pagina" class="btn btn-outline-warning proxima-pagina rounded-5"><i class="fa fa-angle-double-right"></i></button>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>    
+
+
+    <div class="sessao-lista-produto d-none">
+        <!-- Exibir as variedades -->
+        <div id="variedades-container" class="row">
+            <!-- Aqui as variedades serão exibidas dinamicamente -->
+            <div class="col-12">
+                <h1 class="linkagro-text-titulo">Sem produtos</h1>
+            </div>
+        </div>
+    </div>
+
+
+</section>
+
+{% endblock content %}

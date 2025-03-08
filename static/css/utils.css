@@ -1,0 +1,36 @@
+
+/* Scroll Personalizado */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    cursor: pointer;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(44,95,45,0.1);
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2c5f2d;
+  border-radius: 5px;
+  cursor: pointer;
+  
+  &:hover {
+    background: #1e401f;
+    cursor: pointer;
+  }
+}
+
+/* Cursor Personalizado */
+.custom-cursor {
+  position: fixed;
+  pointer-events: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #2c5f2d 20%, transparent 100%);
+  mix-blend-mode: difference;
+  z-index: 9999;
+  transition: transform 0.3s ease, opacity 0.2s ease;
+}

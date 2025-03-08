@@ -1,0 +1,271 @@
+{% extends "base/base_filtro_regiao.html" %}
+
+{% block title %} Linkagro - Filtrar Locais de produção {% endblock title %}
+
+{% block content %}
+<style>
+.main {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Arial Rounded MT Bold', Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.form-container {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    backdrop-filter: blur(8px);
+    width: 90%;
+    max-width: 450px;
+    transform: translateY(-5px);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+h1 {
+    color: #2c4a3a;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-size: 1.8rem;
+}
+
+.form-group {
+    position: relative;
+    margin-bottom: 1.8rem;
+}
+
+select, input {
+    width: 100%;
+    padding: 1rem;
+    border: 2px solid #7aa392;
+    border-radius: 10px;
+    background: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+select:focus, input:focus {
+    outline: none;
+    border-color: #2c4a3a;
+    box-shadow: 0 0 10px rgba(44,74,58,0.2);
+}
+
+select:hover, input:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44,74,58,0.2);
+}
+
+.animated-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #2c4a3a;
+    transition: width 0.3s ease;
+}
+
+select:focus ~ .animated-border,
+input:focus ~ .animated-border {
+    width: 100%;
+}
+
+.hidden-fields {
+    display: none;
+    margin-top: 1.5rem;
+}
+
+input:disabled {
+    background-color: #f5f5f5;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.btn-filter {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #3c6b55 0%, #2c4a3a 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-filter:disabled {
+    background: linear-gradient(135deg, #7aa392 0%, #5d8a75 100%);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.btn-filter:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(44,74,58,0.4);
+}
+
+.loading-dots {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.btn-filter.loading .btn-text {
+    visibility: hidden;
+}
+
+.btn-filter.loading .loading-dots {
+    display: block;
+}
+
+.loading-dots::after {
+    content: '';
+    animation: loading 1s infinite;
+}
+
+@keyframes loading {
+    0% { content: '.'; }
+    33% { content: '..'; }
+    66% { content: '...'; }
+}
+
+.resultado-container {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.resultado-card {
+    background: rgba(255,255,255,0.95);
+    padding: 1.5rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    animation: slideUp 0.5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.success-animation {
+    width: 50px;
+    height: 50px;
+    margin: 1rem auto;
+    background: #2c4a3a;
+    mask: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+    animation: checkmark 0.5s ease;
+}
+
+@keyframes checkmark {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+</style>
+<div class="main">
+    <form class="form-container">
+        <h1>🚩 Filtro Geográfico</h1>
+        
+        <div class="form-group">
+            <select id="provincia" required>
+                <option value="">Selecione uma província...</option>
+                <option>Maputo Cidade</option>
+                <option>Maputo Província</option>
+                <option>Gaza</option>
+                <option>Inhambane</option>
+                <option>Sofala</option>
+                <option>Manica</option>
+                <option>Tete</option>
+                <option>Zambézia</option>
+                <option>Nampula</option>
+                <option>Cabo Delgado</option>
+                <option>Niassa</option>
+            </select>
+            <span class="animated-border"></span>
+        </div>
+    
+        <div class="hidden-fields">
+            <div class="form-group">
+                <input type="text" id="distrito" placeholder="Distrito" disabled required>
+                <span class="animated-border"></span>
+            </div>
+            <div class="form-group">
+                <input type="text" id="localidade" placeholder="Localidade" disabled required>
+                <span class="animated-border"></span>
+            </div>
+            
+            <button type="button" class="btn-filter" disabled>
+                <span class="btn-text">🔍 Aplicar Filtros</span>
+                <div class="loading-dots"></div>
+            </button>
+        </div>
+    
+        <div id="resultado" class="resultado-container"></div>
+    </form>
+</div>
+
+    <script>
+        const provinciaSelect = document.getElementById('provincia');
+        const hiddenFields = document.querySelector('.hidden-fields');
+        const filterButton = document.querySelector('.btn-filter');
+        const inputs = document.querySelectorAll('input');
+        
+        // Ativa campos quando província selecionada
+        provinciaSelect.addEventListener('change', function() {
+            const selectedProvince = this.value;
+            if (selectedProvince) {
+                hiddenFields.style.display = 'block';
+                inputs.forEach(input => {
+                    input.disabled = false;
+                    input.placeholder = `${input.placeholder} ${this.value.includes('Maputo') ? 'de' : 'da'} ${this.value}`;
+                });
+            } else {
+                hiddenFields.style.display = 'none';
+            }
+        });
+
+        // Validação em tempo real
+        document.querySelector('form').addEventListener('input', () => {
+            const allFilled = [...inputs].every(input => input.value.trim() !== '');
+            filterButton.disabled = !allFilled || !provinciaSelect.value;
+        });
+
+        // Simulação de filtro
+        filterButton.addEventListener('click', function() {
+            this.classList.add('loading');
+            this.querySelector('.btn-text').textContent = 'Processando...';
+            
+            setTimeout(() => {
+                this.classList.remove('loading');
+                this.querySelector('.btn-text').textContent = '🔍 Aplicar Filtros';
+                
+                document.getElementById('resultado').innerHTML = `
+                    <div class="resultado-card">
+                        <h3>🗺️ Filtro Aplicado!</h3>
+                        <p>Província: ${provinciaSelect.value}</p>
+                        <p>Distrito: ${document.getElementById('distrito').value}</p>
+                        <p>Localidade: ${document.getElementById('localidade').value}</p>
+                        <div class="success-animation"></div>
+                    </div>
+                `;
+            }, 1500);
+        });
+    </script>
+{% endblock content %}

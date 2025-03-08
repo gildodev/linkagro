@@ -1,0 +1,133 @@
+
+<div class="sessao-area-pesquisa-conteudo bg-white shadow">
+    <div class="subnav-menu p-2 ">
+        <form action="{% url 'linkagro_pesquisa' %}" class="p-2" method="get">
+            <div class="row">
+                <div class="col-md-3">
+                    <label>Pesquisar...</label>
+                    <input type="text" name="q" placeholder="Pesquisar produto..." class="form-control shadow-none border-1 border-secondary" required>
+                </div>
+                <div class="col-md-3">
+                    <label>Selecione a região...</label>
+                    <select id="selecione-regiao" name="regiao" data-placeholder="Selecione a região..." class="d-flex" autocomplete="off">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Selecione a província...</label>
+                    <select id="selecione-provincia" name="provincia" data-placeholder="Selecione a província..." autocomplete="off" disabled>
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label>Selecione distrito...</label>
+                    <select id="selecione-distrito" name="distrito" data-placeholder="Selecione distrito..." autocomplete="off" disabled>
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="text-center m-2">
+                        <button type="submit" class="btn btn-outline-success w-100 rounded-5 "> <i class="fa fa-search fa-1"></i> Pesquisar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+
+<script>
+
+    let regioes = [];
+    let provincias = [];
+    let distritos = [];
+
+    // Inicializando Tom Select
+    let selectRegiao = new TomSelect("#selecione-regiao", { create: false, sortField: "text", persist: false, });
+    let selectProvincia = new TomSelect("#selecione-provincia", { create: false, sortField: "text", persist: false,});
+    let selectDistrito = new TomSelect("#selecione-distrito", { create: false, sortField: "text", persist: false, });
+    
+    // Carregar dados da API
+    function loadData() {
+        
+        $.get("http://localhost:3000/api/enderecos-geograficos-produtores/", function (data) {
+            regioes = data.regioes;
+            provincias = data.provincias;
+            distritos = data.distritos;
+
+            // Popular as regiões
+            selectRegiao.clear();
+            selectRegiao.addOption({ value: "", text: "Todas" , selectOnTab: true});
+            regioes.forEach(regiao => {
+                selectRegiao.addOption({ value: regiao.id, text: regiao.regiao });
+            });
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Erro na requisição:", textStatus, errorThrown);
+            alert("Erro ao carregar os dados. Verifique a API!");
+        });
+
+    }
+
+    // Atualizar lista de províncias baseada na região selecionada
+    function updateProvincias(regiaoId) {
+        selectProvincia.clear();
+        selectProvincia.clearOptions();
+
+        let filteredProvincias = regiaoId ? provincias.filter(p => p.regiao_id == regiaoId) : provincias;
+        filteredProvincias.forEach(provincia => {
+            console.log(regiaoId==provincia.regiao_id)
+            selectProvincia.addOption({ value: provincia.id, text: provincia.provincia });
+        });
+
+        selectProvincia.enable();
+    }
+
+    // Atualizar lista de distritos baseada na província selecionada
+    function updateDistritos(provinciaId) {
+        selectDistrito.clear();
+        selectDistrito.clearOptions();
+
+        let filteredDistritos = provinciaId ? distritos.filter(d => d.provincia_id == provinciaId) : distritos;
+        filteredDistritos.forEach(distrito => {
+            selectDistrito.addOption({ value: distrito.id, text: distrito.distrito });
+        });
+
+        selectDistrito.enable();
+        
+    }
+
+    // Evento: Quando a região for selecionada
+    selectRegiao.on("change", function () {
+        let regiaoId = selectRegiao.getValue();
+       
+        if (regiaoId) {
+            updateProvincias(regiaoId);
+        } else {
+            updateProvincias(null);
+        }
+        selectDistrito.clear();
+        selectDistrito.disable();
+    });
+
+    // Evento: Quando a província for selecionada
+    selectProvincia.on("change", function () {
+        let provinciaId = selectProvincia.getValue();
+        if (provinciaId) {
+            updateDistritos(provinciaId);
+        } else {
+            selectDistrito.clear();
+            selectDistrito.disable();
+        }
+    });
+
+    // Carregar os dados ao iniciar
+    $(document).ready(function () {
+        loadData();
+    });
+</script>
+

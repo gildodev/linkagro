@@ -1,0 +1,22 @@
+
+<div class="message-container">
+    <h1>Ops! Nada encontrado...</h1>
+    <p>Infelizmente, não temos produtos disponíveis nesta categoria no momento. Mas não desanime!</p>
+
+    <div class="drawer-container shadow">
+        <div class="drawer"></div>
+    </div>
+
+    <div class="empty-msg">Produtos indisponíveis!</div>
+</div>
+
+<script>
+    setTimeout(function () {
+        document.querySelector('.drawer').classList.add('open');
+        document.querySelector('.empty-msg').style.opacity = 1;
+    }, 500);
+
+    function goBack() {
+        window.location.href = '/';  // Ou redireciona para qualquer outra página
+    }
+</script>

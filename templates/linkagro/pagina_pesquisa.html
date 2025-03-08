@@ -1,0 +1,66 @@
+{% extends "base/base.html" %}
+{% load static%}
+
+{% block js %}
+<script>
+    $(document).ready(function(){
+        
+        $(".menu-filtro-titulo").click(function(){
+            $(this).toggleClass("active");
+        });
+    });
+</script>
+{% endblock js %}
+
+{% block content %}
+<section class="container my-3">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card-menu">
+                <h1>Menu de Filtros</h1>
+
+                <ul class="menu-filtro">
+                    <li class="menu-filtro-item active">
+                        <span class="menu-filtro-titulo active">Categorias <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                        <ul class="submenu-filtro">
+                            <li class="submenu-filtro-item"><a href="" class="submenu-filtro-link">a (10)</a></li>
+                            <li class="submenu-filtro-item"><a href="" class="submenu-filtro-link">a (10)</a></li>
+                            <li class="submenu-filtro-item"><a href="" class="submenu-filtro-link">a (10)</a></li>
+                            <li class="submenu-filtro-item"><a href="" class="submenu-filtro-link">a (10)</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-filtro-item">
+                        <span class="menu-filtro-titulo">produtos <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                        <ul class="submenu-filtro">
+                            <li>A (10)</li>
+                            <li>A (10)</li>
+                            <li>A (10)</li>
+                            <li>A (10)</li>
+                            <li>A (10)</li>
+                            <li>A (10)</li>
+                        </ul>
+                    </li>
+
+                    <li class="menu-filtro-item d-none">
+                        <span class="menu-filtro-titulo">Tipos de Produtos <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                        <ul class="submenu-filtro">
+                            <li>A (10)</li>
+                            <li>A (10)</li>
+                            <li>A (10)</li>
+                            <li>A (10)</li>
+                            <li>A (10)</li>
+                            <li>A (10)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="filtro-linkagro bg-body">
+                <h1>Conteudo</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

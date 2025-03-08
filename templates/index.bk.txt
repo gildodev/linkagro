@@ -1,0 +1,201 @@
+<!-- Navbar Glassmorphism -->
+<header class="animate__animated animate__zoomInDown" id="navbar">
+    <div class="header container">
+        <nav class="navbar navbar-expand-md pt-0 mt-0">
+            <div class="container">
+                <!-- brand -->
+                <a class="navbar-brand  d-flex align-items-center text-gradient me-5 gap-2" href="{% url 'linkagro_home' %}">
+                    <svg width="40" height="40" viewBox="0 0 40 40">
+                        <path fill="#FFD700" d="M20 0L0 20l20 20 20-20L20 0zm0 6.364L33.636 20 20 33.636 6.364 20 20 6.364zM12.5 15a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zm15 10a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0z"/>
+                    </svg>
+                    Linkagro
+                </a>
+
+                <div class="navbar-subnav ">
+                    <div class="navbar-subnav-content pt-3 ">
+                        <!-- Pesquisa -->
+                        <div class="px-5 animate__animated " id="area-pesquisa">
+                            <div class="navbar-search-wrapper py-1 mb-2">
+                                <form action="{% url 'linkagro_pesquisa' %}" method="get">
+                                    <div class="input-group">
+                                        <button class="navbar-btn-submit input-group-text bg-transparent border-0" type="submit"><i class="fa fa-search text-white"></i></button>
+                                        <input type="search" class="form-control navbar-search-input" name="q" id="q" placeholder="pesquisar produto...">
+                                        <button id="navbar-btn-closed" class=" input-group-text bg-transparent border-0"><i class="fa fa-arrow-right text-warning"></i></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        
+                        <ul class="navbar-subnav-menu animate__animated pt-1" id="area-navegacao">
+                            <li class="navbar-subnav-item {{activo_home}} ">
+                                <a class="navbar-subnav-link d-flex text-nowrap" href="{% url 'linkagro_home' %}">
+                                    Página inicial
+                                </a>
+                            </li>
+                            <li class="navbar-subnav-item">
+                                <a class="navbar-subnav-link {{activo_noticia }}" href="{% url 'linkagro_noticias' %}">Notíciais </a>
+                            </li>
+                            <li class="navbar-subnav-item">
+                                <a class="navbar-subnav-link {{activo_anuncie_aqui }}" href="{% url 'linkagro_anuncie_aqui' %}"> Anuncie aqui </a>
+                            </li>
+                            <li class="navbar-subnav-item ">
+                                <a class="navbar-subnav-link {{activo_como_funciona }}" href="{% url 'linkagro_como_funciona' %}"> Como funciona? </a>
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </div>
+
+    
+                <!-- Autenticacao -->
+                <div class="navbar-usuario m-0 p-0">
+                    <ul class="navbar-usuario-nav mx-0">
+                        <!-- ao clicar quero que ao ser clicado abra o search -->
+                        <li class="navbar-usuario-nav-item  d-none d-md-flex" id="btn-search-close">
+                            <span class="navbar-usuario-nav-link px-2">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </li>
+    
+                        <li class="navbar-usuario-nav-item dropdown d-none d-md-block">
+                            <span class="dropdown-toggle navbar-usuario-nav-link px-2 " id="userDropdown" role="button" data-bs-toggle="dropdown"  aria-expanded="true">
+                                <i class="fa fa-user"></i>
+                            </span>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle"></i> Perfil</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Configurações</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                            </ul>
+                        </li>
+                        
+                        <li class="navbar-usuario-nav-item d-md-none d-flex" id="abrir-menu">
+                            <span class="navbar-usuario-nav-link px-2">
+                                <i class="fa fa-bars"></i>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+    
+            </div>
+    
+        </nav>
+    </div>
+</header>
+
+
+<nav id="show-only-scroll-down" class="subnav fixed-top animate__animated my-0 container">
+    <div class="subnav-content">
+        <ul class="subnav-menu shadow-lg ">
+            <li class="subnav-item {{activo_home}} ">
+                <a class="subnav-link " href="{% url 'linkagro_home' %}"> Página inicial </a>
+            </li>
+            <li class="subnav-item {{activo_noticia}} ">
+                <a class="subnav-link" href="{% url 'linkagro_noticias' %}"> Noticiais </a>
+            </li>
+            <li class="subnav-item {{activo_anuncie_aqui}} ">
+                <a class="subnav-link" href="{% url 'linkagro_anuncie_aqui' %}" >Anuncie aqui</a>
+            </li>
+            <li class="subnav-item {{activo_como_funciona}} ">
+                <a class="subnav-link" href="{% url 'linkagro_como_funciona' %}"> Como funciona?</a>
+            </li>
+            
+        </ul>
+    </div>
+</nav>
+
+
+
+<!-- JavaScript -->
+<script defer>
+    $(document).ready(function () {
+        let navbar = $("#navbar");
+        let subnav = $("#show-only-scroll-down");
+        let area_pesquisa = $("#area-pesquisa");
+        let area_navegacao = $("#area-navegacao");
+        let area_pesquisa_btn = $("#btn-search-close");
+        let area_pesquisa_btn_close = $("#navbar-btn-closed");
+        let menu_navegacao=$("#menu-navegacao-mobile");
+        let btn_pesquisar=$("#btn-pesquisar");
+        let btn_close_menu=$("#btn-close-menu");
+        let abrir_menu = $("#abrir-menu");
+        let navbarHeight = navbar.outerHeight() - 5;
+        let verificar_se_clicou_btn_pesquisa=true;
+        let verificar_se_clicou_abrir_menu=true;
+
+        $(window).on("scroll", function () {
+
+            if ($(this).scrollTop() > navbarHeight) {
+                subnav.removeClass("animate__slideInDown animate__fadeOutUp z-n-1")
+                    .addClass("active animate__slideInDown");
+            } else {
+                subnav.removeClass("animate__slideInDown")
+                    .addClass("animate__fadeOutUp z-n-1");
+                if($(this).scrollTop() == 0){
+                    subnav.removeClass("active");
+                }
+            }
+        });
+
+        $(area_pesquisa_btn).on("click", function () {
+
+            if (verificar_se_clicou_btn_pesquisa) {
+                area_navegacao.addClass("animate__slideInDown")
+                area_pesquisa.addClass("active animate__slideInDown");
+                area_pesquisa_btn.addClass("active")
+                verificar_se_clicou_btn_pesquisa=false;
+            } else {
+                
+                area_pesquisa.removeClass("active animate__slideInUp ")
+                area_navegacao.addClass("animate__slideInDown")
+                area_pesquisa_btn.removeClass("active")
+                verificar_se_clicou_btn_pesquisa=true;
+            }
+            
+        });
+
+        $(area_pesquisa_btn_close).on("click", function () {
+
+            if (verificar_se_clicou_btn_pesquisa) {
+                area_navegacao.addClass("animate__slideInDown")
+                area_pesquisa.addClass("active animate__slideInDown");
+
+                verificar_se_clicou_btn_pesquisa=false;
+            } else {
+                
+                area_pesquisa.removeClass("active animate__slideInUp ")
+                area_navegacao.addClass("animate__slideInDown")
+                verificar_se_clicou_btn_pesquisa=true;
+            }
+
+        });
+
+        // Abrir menu
+        $(abrir_menu).on("click", function () {
+
+            if (verificar_se_clicou_abrir_menu) {
+                abrir_menu.addClass("active")
+                menu_navegacao.removeClass("animate__fadeOutLeft")
+                menu_navegacao.addClass("active animate__fadeInLeftBig")
+                verificar_se_clicou_abrir_menu=false;
+            }
+        });
+        
+        $(btn_close_menu).on("click", function () {
+
+            if (!verificar_se_clicou_abrir_menu) {
+                
+                abrir_menu.removeClass("active")
+                menu_navegacao.addClass("animate__fadeOutLeft")
+                verificar_se_clicou_abrir_menu=true;
+            }
+        });
+    });
+
+</script>
+
+
+======================================= Backup Header.html 05/03/2025 ====================================================
+
+
+

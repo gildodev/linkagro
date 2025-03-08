@@ -1,0 +1,57 @@
+{% load static%}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Linkagro{% endblock %}</title>
+    
+    {% comment %} <meta name="apple-mobile-web-app-capable" content="yes"> {% endcomment %}
+    <!-- Color theme for statusbar (Android only) -->
+    {% comment %} <meta name="theme-color" content="#2196f3"> {% endcomment %}
+    
+    <!-- Incluindo o CSS -->
+    {% comment %} Externos {% endcomment %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}"> 
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/css/tom-select.css" rel="stylesheet">
+    <script defer src="https://cdn.jsdelivr.net/npm/tom-select@2.4.3/dist/js/tom-select.complete.min.js"></script>
+   
+    {% comment %} Fim Externos {% endcomment %}
+    
+    {% block css %}{% endblock css %} 
+    <link rel="stylesheet" href="{% static 'css/utils.css' %}"> 
+    <link rel="stylesheet" href="{% static 'css/linkagro.css' %}">
+    <link rel="stylesheet" href="{% static 'css/linkagro_media.css' %}"> 
+    
+    <!-- Você pode adicionar mais arquivos CSS aqui -->
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Incluindo o JS -->
+    {% block js %}{% endblock js %} 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% comment %} <script src="{% static 'js/script.js' %}" defer></script> {% endcomment %}
+    
+    <!-- Você pode adicionar mais arquivos JS aqui -->
+</head>
+
+<body>
+    {% include 'includes/header.html' %} 
+
+    <div class="main-contents">
+        <main>
+            {% block content %}{% endblock content %}
+        </main>
+
+
+        {% include 'includes/footer.html' %} 
+    </div>
+
+    {% include 'includes/menu.html' %}
+
+</body>
+</html>

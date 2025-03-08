@@ -1,0 +1,354 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
+from django.db import models
+
+
+class AnunciosArmazem(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nome_armazem = models.CharField(max_length=100)
+    numero_local_armazem = models.CharField(max_length=255)
+    activo = models.IntegerField()
+    unidade_armazenamento = models.CharField(max_length=5)
+    capacidade_maxima = models.PositiveIntegerField()
+    lotacao = models.PositiveIntegerField()
+    condicoes_armazenagem = models.TextField()
+    dimensao = models.CharField(max_length=100)
+    data_criacao = models.DateField()
+    disponivel = models.IntegerField()
+    distrito = models.ForeignKey('AppDistrito', models.DO_NOTHING, blank=True, null=True)
+    localidade = models.ForeignKey('AppLocalidade', models.DO_NOTHING, blank=True, null=True)
+    provincia = models.ForeignKey('AppProvincia', models.DO_NOTHING, blank=True, null=True)
+    armazenista = models.ForeignKey('AnunciosArmazenista', models.DO_NOTHING)
+    slug = models.CharField(unique=True, max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'anuncios_armazem'
+
+
+class AnunciosArmazemArmazenarProduto(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    armazem = models.ForeignKey(AnunciosArmazem, models.DO_NOTHING)
+    produto = models.ForeignKey('AppProduto', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'anuncios_armazem_armazenar_produto'
+        unique_together = (('armazem', 'produto'),)
+
+
+class AnunciosArmazenista(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    foto_perfil = models.CharField(max_length=100, blank=True, null=True)
+    telefone = models.CharField(max_length=20)
+    telefone_2 = models.CharField(max_length=20)
+    descricao = models.TextField(blank=True, null=True)
+    activo = models.IntegerField()
+    data_cadastro = models.DateTimeField()
+    distrito = models.ForeignKey('AppDistrito', models.DO_NOTHING, blank=True, null=True)
+    localidade = models.ForeignKey('AppLocalidade', models.DO_NOTHING, blank=True, null=True)
+    provincia = models.ForeignKey('AppProvincia', models.DO_NOTHING, blank=True, null=True)
+    user = models.OneToOneField('AuthUser', models.DO_NOTHING)
+    empresa = models.CharField(max_length=255, blank=True, null=True)
+    slogan = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.CharField(unique=True, max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'anuncios_armazenista'
+
+
+class AnunciosAvaliararmazem(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    avaliar_armazem = models.DecimalField(max_digits=3, decimal_places=2, blank=True, null=True)
+    user = models.ForeignKey('AuthUser', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'anuncios_avaliararmazem'
+
+
+class AnunciosBanner(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    titulo = models.CharField(max_length=255)
+    descricao = models.TextField()
+    tipo = models.CharField(max_length=10)
+    arquivo = models.CharField(max_length=100)
+    activo = models.IntegerField()
+    mostrar_texto = models.IntegerField()
+    criado_em = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'anuncios_banner'
+
+
+class AnunciosGaleriaarmazem(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    imagem_armazem = models.CharField(max_length=100)
+    activo = models.IntegerField()
+    armazem_galeria = models.ForeignKey(AnunciosArmazem, models.DO_NOTHING)
+    default = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'anuncios_galeriaarmazem'
+
+
+class AnunciosParceiros(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    titulo = models.CharField(max_length=255)
+    arquivo = models.CharField(max_length=100)
+    mostrar_texto = models.IntegerField()
+    criado_em = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'anuncios_parceiros'
+
+
+class AppCategoria(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    imagem_categoria = models.CharField(max_length=100)
+    nome_categoria = models.CharField(unique=True, max_length=255)
+    slug_categoria = models.CharField(unique=True, max_length=120)
+    descricao_categoria = models.TextField(blank=True, null=True)
+    activo = models.IntegerField()
+    banner_categoria = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'app_categoria'
+
+
+class AppDistrito(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    distrito = models.CharField(max_length=100)
+    provincia = models.ForeignKey('AppProvincia', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'app_distrito'
+
+
+class AppGaleriavariedade(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    imagem_variedade = models.CharField(max_length=100)
+    default = models.IntegerField()
+    activo = models.IntegerField()
+    variedade_galeria = models.ForeignKey('AppVariedade', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'app_galeriavariedade'
+
+
+class AppLocalidade(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    localidade = models.CharField(max_length=100)
+    distrito = models.ForeignKey(AppDistrito, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'app_localidade'
+
+
+class AppProduto(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nome_produto = models.CharField(max_length=255)
+    descricao_produto = models.TextField(blank=True, null=True)
+    epoca_colheita_produto = models.CharField(max_length=100, blank=True, null=True)
+    data_adicionado = models.DateTimeField()
+    categoria_produto = models.ForeignKey(AppCategoria, models.DO_NOTHING)
+    imagem_produto = models.CharField(max_length=100)
+    slug_produto = models.CharField(unique=True, max_length=120)
+    activo = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'app_produto'
+
+
+class AppProdutor(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    telefone = models.CharField(max_length=128, blank=True, null=True)
+    telefone_2 = models.CharField(max_length=128, blank=True, null=True)
+    descricao = models.TextField(blank=True, null=True)
+    activo = models.IntegerField()
+    data_cadastro = models.DateTimeField()
+    distrito = models.ForeignKey(AppDistrito, models.DO_NOTHING, blank=True, null=True)
+    localidade = models.ForeignKey(AppLocalidade, models.DO_NOTHING, blank=True, null=True)
+    provincia = models.ForeignKey('AppProvincia', models.DO_NOTHING, blank=True, null=True)
+    user = models.OneToOneField('AuthUser', models.DO_NOTHING)
+    logotipo = models.CharField(max_length=100, blank=True, null=True)
+    nome_empresa = models.CharField(max_length=100, blank=True, null=True)
+    slogan = models.CharField(max_length=255, blank=True, null=True)
+    tipo_produtor = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'app_produtor'
+
+
+class AppProvincia(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    provincia = models.CharField(unique=True, max_length=100)
+    regiao = models.ForeignKey('AppRegiao', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'app_provincia'
+
+
+class AppRegiao(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    regiao = models.CharField(unique=True, max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'app_regiao'
+
+
+class AppVariedade(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    nome_variedade = models.CharField(max_length=100)
+    slug_variedade = models.CharField(unique=True, max_length=120)
+    descricao_variedade = models.TextField(blank=True, null=True)
+    preco_por_unidade = models.DecimalField(max_digits=10, decimal_places=2)
+    estoque_variedade = models.PositiveIntegerField()
+    unidade_variedade = models.CharField(max_length=5)
+    qualidade = models.CharField(max_length=20)
+    epoca_de_colheita = models.CharField(max_length=10)
+    data_inicio_colheita = models.DateField()
+    data_fim_colheita = models.DateField()
+    produto_variedade = models.ForeignKey(AppProduto, models.DO_NOTHING)
+    produtor_variedade = models.ForeignKey(AppProdutor, models.DO_NOTHING)
+    distrito = models.ForeignKey(AppDistrito, models.DO_NOTHING, blank=True, null=True)
+    localidade = models.ForeignKey(AppLocalidade, models.DO_NOTHING, blank=True, null=True)
+    provincia = models.ForeignKey(AppProvincia, models.DO_NOTHING, blank=True, null=True)
+    quantidade_variedade = models.PositiveIntegerField()
+    activo = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'app_variedade'
+        unique_together = (('produto_variedade', 'nome_variedade', 'produtor_variedade'),)
+
+
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=150)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+    permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group', 'permission'),)
+
+
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING)
+    codename = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type', 'codename'),)
+
+
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
+    date_joined = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user', 'group'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user', 'permission'),)
+
+
+class DjangoAdminLog(models.Model):
+    action_time = models.DateTimeField()
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.PositiveSmallIntegerField()
+    change_message = models.TextField()
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'

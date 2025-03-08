@@ -1,0 +1,174 @@
+{% extends "base/base.html" %}
+{% load static%}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}"> 
+<style>
+
+</style>
+{% endblock css %}
+
+
+{% block js %}
+<script src="{% static 'js/owl.carousel.min.js' %}" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+
+
+
+
+
+<script>
+    /*---background image---*/
+	function dataBackgroundImage() {
+		$('[data-bg-img-banner]').each(function () {
+			var bgImgUrl = $(this).data('bg-img-banner');
+			$(this).css({
+				'background-image': 'url(' + bgImgUrl + ')', // + meaning concat
+			});
+            
+		});
+    }
+    
+    $(window).on('load', function () {
+        dataBackgroundImage();
+        /*---slider activation---*/
+        var $slider = $('.slider_area');
+        if($slider.length > 0){
+            $slider.owlCarousel({
+                animateIn: 'animate__zoomIn',
+                animateOut: 'animate__zoomOut',
+                autoplayHoverPause: true,
+                loop: true,
+                nav: false,
+                autoplay: true,
+                autoplayTimeout: 5000,
+                items: 1,
+                dots:true,
+            });
+        }
+    });
+</script>
+
+
+{% endblock js %}
+
+
+
+{% block content %}
+
+<div class="container">
+    <div class="hero my-3">
+        <div class="slider_area px- owl-carousel">
+            {% for banner in banner %}
+                <div class="linkagro-anuncios " data-bg-img-banner="{{banner.arquivo.url}}" sytle="background-image: url('{{banner.arquivo.url}}')">
+                    <div class="linakgro-anuncios-content d-none">
+                        <a href="shop.html" class="">Saiba Mais </a>
+                    </div>
+                </div>
+            {% empty %}
+            <h1>Sem Anúncios</h1>
+            {% endfor %}
+
+        </div>
+
+        
+    </div>
+
+    <div class="sessao-area-pesquisa mb-3">
+        {% include "includes/sessao_de_pesquisa.html" %}
+    </div>
+
+
+    <section class="mb-3">
+        <div class="sessao-titulo text-center">
+            <h1>Categorias</h1>
+        </div>
+
+        <article class="py-2">
+            <div class="row">
+                {% for categoria in categoria %}
+                <div class="col-md-2 col-lg-3 col-6 mb-3 animate__animated animate__fadeInUp">
+                    <a href="{% url 'linkagro_produtos_categoria' categoria.slug_categoria|default:'none' %}">
+                        <div class="card-categoria">
+                            <div class="card-categoria-imagem">
+                                <img src="{{categoria.imagem_categoria.url}}" class="img-fluids" alt="{{categoria.imagem_categoria.url}}">
+                            </div>
+                            <div class="card-categoria-conteudo mt-2 px-2">
+                                <div class="action d-flex align-items-center justify-content-center">
+                                    <h3 class="text-gradient">{{categoria.nome_categoria}} </h3>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% empty %}
+                    <p>Sem Catgeorias</p>
+                {% endfor %}
+
+            </div>
+            
+        </article>
+    </section>
+    
+
+    <section class="mb-3">
+        <div class="sessao-titulo text-center">
+            <h1>Parceiros</h1>
+        </div>
+
+        <article class="py-">
+            <div class="parceiros rounded-2  border-top">
+                <div class="parceiros-slider rounded-2 bg-transparent d-flex gap-2 p-2 justify-content-center">
+                    {% for parceiro in parceiros %}
+                    <a href="#">
+                        <div class="parceiro">
+                            <img src="{{parceiro.arquivo.url}}" class="rounded-2" alt="{{parceiro.arquivo.url}}" width="250" height="80">
+                        </div>
+                    </a>
+                    {% empty %}
+                        <p>Sem Parceiros</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </article>
+    </section>
+
+
+     <section class="mb-5">
+        <div class="sessao-titulo text-center  border-bottom mb-2">
+            <h1>Últimas Notícias</h1>
+        </div>
+
+        <div class="row " id="ultimas-noticias">
+            {% for noticia in noticias %}
+            <div class="col-md-4 col-6 mb-2">
+                <div class="noticia">
+                    <div class="capa-noticia">
+                        <img {% if not noticia.capa %}  onerror="this.onerror=null; this.src='https://unsplash.com/pt-br/fotografias/foto-em-tons-de-cinza-do-robo-da-caixa-na-mesa-ZnLprInKM7s';" {% endif %} src="{{noticia.capa.url}}" 
+                        alt="{{noticia}}">
+
+                        <div class="saiba-mais">
+                            <a href="" class="noticia-action py-2 px-4">Saiba Mais</a>
+                        </div>
+                    </div>
+
+                    <div class="titulo-noticia mt-2 p-2">
+                        <span class="limite-texto-1">{{noticia}}</span>
+                        <p class="descricao limite-texto-1">{{noticia.descricao}} 
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Sapiente ad quas veritatis alias ipsa dolorem tenetur ex eligendi? Sunt eos libero sequi voluptas minima! Distinctio perspiciatis sint consectetur porro cumque!
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+            {% empty %}
+            sem
+            {% endfor %}
+            
+        </div>
+    </section>
+
+
+</div>
+{% endblock content %}
