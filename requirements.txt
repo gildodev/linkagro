@@ -26,7 +26,7 @@ gunicorn==23.0.0
 injector==0.22.0
 kombu==5.4.2
 MarkupSafe==3.0.2
-mysqlclient==2.2.7
+# mysqlclient==2.2.7
 packaging==24.2
 phonenumbers==8.13.55
 pillow==11.1.0
