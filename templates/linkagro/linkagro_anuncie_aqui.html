@@ -1,0 +1,30 @@
+{% extends "base/base.html" %}
+{% load static%}
+{% block title %}Linkagro - anuncie aqui{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>📢 Anuncie Seu Negócio!</h2>
+    <p style="text-align: center; color: #666;">Cadastre seu estabelecimento e conecte-se com mais clientes.</p>
+    <form>
+        <label for="tipo">📌 Tipo de Serviço:</label>
+        <select id="tipo" name="tipo">
+            <option value="armazem">🏢 Armazém</option>
+            <option value="hospedagem">🏨 Hospedagem</option>
+            <option value="comida">🍽️ Lazer - Comer</option>
+            <option value="dormir">🛏️ Lazer - Dormir</option>
+        </select>
+        
+        <label for="nome">🏷️ Nome do Estabelecimento:</label>
+        <input type="text" id="nome" name="nome" required>
+        
+        <label for="descricao">📝 Descrição:</label>
+        <textarea id="descricao" name="descricao" rows="4" placeholder="Conte mais sobre seu serviço..."></textarea>
+        
+        <label for="contato">📞 Contato:</label>
+        <input type="text" id="contato" name="contato" required>
+        
+        <button type="submit">🚀 Enviar Anúncio</button>
+    </form>
+</div>
+{% endblock content %}

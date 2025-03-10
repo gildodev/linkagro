@@ -54,9 +54,28 @@ class linkagro:
 
     def panina_de_detalhes_da_variedade(request, varied):
         variedade=get_object_or_404(Variedade, slug_variedade=varied)
-        
+        data_atual = timezone.now().date()
+
+        outras_variedades = Variedade.objects.filter(
+            produtor_variedade=variedade.produtor_variedade,
+            activo=True,
+            data_inicio_colheita__lte=data_atual,  # Variedades com colheita iniciando ou antes da data atual
+            data_fim_colheita__gte=data_atual  # E a data de fim da colheita ainda não passou
+        )[:4]
+
+        variedades_relacionadas = Variedade.objects.filter(
+            produto_variedade=variedade.produto_variedade,
+            activo=True,
+            data_inicio_colheita__lte=data_atual,  # Variedades com colheita iniciando ou antes da data atual
+            data_fim_colheita__gte=data_atual  # E a data de fim da colheita ainda não passou
+        ).exclude(produtor_variedade=variedade.produtor_variedade)
+
+
         return render(request, "linkagro/detalhes_da_variedade.html", context={
             "variedade": variedade,
+            "outras_variedades": outras_variedades,
+            "variedades_relacionadas" : variedades_relacionadas,
+
         })
 
 
@@ -79,16 +98,16 @@ class linkagro:
     def panina_de_anunciantes(request):
         # variedade=get_object_or_404(Variedade, slug_pesquisa=q)
         
-        return render(request, "linkagro/pagina_pesquisa.html", context={
-            "variedade": "",
+        return render(request, "linkagro/linkagro_anuncie_aqui.html", context={
+            
         })
 
 
     def panina_como_funciona(request):
         # variedade=get_object_or_404(Variedade, slug_pesquisa=q)
         
-        return render(request, "linkagro/pagina_pesquisa.html", context={
-            "variedade": "",
+        return render(request, "linkagro/linkagro_como_funciona.html", context={
+            
         })
     
 
@@ -96,7 +115,7 @@ class linkagro:
         # variedade=get_object_or_404(Variedade, slug_pesquisa=q)
         
         return render(request, "linkagro/pagina_pesquisa.html", context={
-            "variedade": "",
+            
         })
     
 
@@ -104,5 +123,5 @@ class linkagro:
         # variedade=get_object_or_404(Variedade, slug_pesquisa=q)
         
         return render(request, "linkagro/pagina_pesquisa.html", context={
-            "variedade": "",
+            
         })

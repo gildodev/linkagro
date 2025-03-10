@@ -5,11 +5,28 @@
                 <h1>Configurações</h1>
             </section>
             
-            <button id="btn-close-menu" class="btn-close-menu py-2 px-3"><i class="fa fa-arrow-right"></i></button>
+            <button id="btn-close-menu" class="btn-close-menu rounded-3 btn bg-linkagro "><i class="fa fa-arrow-right"></i></button>
         </div>
 
-        <div class="menu-navegacao-body p-2">
-            <h1>Body</h1>
+        <div class="menu-navegacao-body py-2">
+            <ul class="navbar-subnav-menu animate__animated pt-1 gap-2" id="area-navegacao">
+                <li class="navbar-subnav-item {{activo_home}} mb-2">
+                    <a class="navbar-subnav-link d-flex text-nowrap" href="{% url 'linkagro_home' %}">
+                        Página inicial
+                    </a>
+                </li>
+                <li class="navbar-subnav-item d-none mb-2">
+                    <a class="navbar-subnav-link {{activo_noticia }}" href="{% url 'linkagro_noticias' %}">Notíciais </a>
+                </li>
+                <li class="navbar-subnav-item mb-2">
+                    <a class="navbar-subnav-link {{activo_anuncie_aqui }}" href="{% url 'linkagro_anuncie_aqui' %}"> Anuncie aqui </a>
+                </li>
+                <li class="navbar-subnav-item mb-2">
+                    <a class="navbar-subnav-link {{activo_como_funciona }}" href="{% url 'linkagro_como_funciona' %}"> Como funciona? </a>
+                </li>
+                
+            </ul>
+
         </div>
         <div class="menu-navegacao-footer border-top p-2">
             <ul class="nav d-flex justify-content-around">

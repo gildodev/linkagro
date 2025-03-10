@@ -22,3 +22,7 @@ class ArmazemAdmin(admin.ModelAdmin):
 class GaleriaArmazemAdmin(admin.ModelAdmin):
     list_display = ('id', 'armazem_galeria', 'imagem_armazem', 'activo')
     list_filter = ('activo',)
+
+
+
+

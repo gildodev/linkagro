@@ -11,7 +11,7 @@
                     Linkagro
                 </a>
 
-                <div class="navbar-subnav ">
+                <div class="navbar-subnav d-none d-md-block">
                     <div class="navbar-subnav-content pt-3 ">
                         <!-- Pesquisa -->
                         <div class="px-5 animate__animated " id="area-pesquisa">
@@ -32,7 +32,7 @@
                                     Página inicial
                                 </a>
                             </li>
-                            <li class="navbar-subnav-item">
+                            <li class="navbar-subnav-item d-none">
                                 <a class="navbar-subnav-link {{activo_noticia }}" href="{% url 'linkagro_noticias' %}">Notíciais </a>
                             </li>
                             <li class="navbar-subnav-item">
@@ -62,10 +62,8 @@
                                 <i class="fa fa-user"></i>
                             </span>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle"></i> Perfil</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Configurações</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle"></i> Cadastro</a></li>
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-fa-user-check"></i> Login</a></li>
                             </ul>
                         </li>
                         

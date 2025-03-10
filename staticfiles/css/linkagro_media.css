@@ -1,31 +1,62 @@
 /* Máximo de 480px → Aplica-se a celulares pequenos. */
 @media only screen and (max-width: 480px) {
-    body {
-      background-color: lightblue;
-    }
+    
+  .hero {
+    width: 100%;
+    display: flex !important;
+    align-items: center;
+    flex-direction: column;
+    /* background: var(--verde-vivo); */
+    height: 215px;
+    border-radius: 1rem;
+    position: relative;
+  }
 
-    .navbar-subnav{
-        display: none !important;
-    }
+  .hero .linkagro-anuncios{
+    height: 215px;
+    background: var(--verde-vivo/2);
+    background-repeat: no-repeat;
+    border-radius: 1rem;
+    width: 100%;
+    object-fit: fill;
+    background-size: 100% 100%;
+    background-position: left;
+    background-attachment: fixed;
+    z-index: -2 !important;
+  }
+  
+  .card-categoria .card-categoria-imagem {
+    height: 125px;
+    width: 100%;
+    object-fit: fill;
+  }
+
+  .card-categoria .card-categoria-imagem img{
+    height: 100%;
+    width: 100%;
+    border-radius: 5%;
+    transition: all 0.3s ease-in-out;
+  }
+
+
+  .card-categoria:hover .card-categoria-imagem img{
+    filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.5));
+    transform: scale(1.01);
+  }
+
+
+
 }
 
 
 /* Entre 481px e 768px → Aplica-se a celulares grandes e tablets pequenos. */
 @media only screen and (min-width: 481px) and (max-width: 768px) {
-    body {
-      background-color: lightgreen;
-    }
     
-    .navbar-subnav{
-        display: none !important;
-    }
 }
 
 /* 🔹 Entre 769px e 1024px → Aplica-se a tablets grandes e laptops pequenos. */
 @media only screen and (min-width: 769px) and (max-width: 1024px) {
-    body {
-      background-color: lightcoral;
-    }
+    
 }
 
 

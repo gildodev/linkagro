@@ -7,23 +7,30 @@
                     <label>Pesquisar...</label>
                     <input type="text" name="q" placeholder="Pesquisar produto..." class="form-control shadow-none border-1 border-secondary" required>
                 </div>
-                <div class="col-md-3">
-                    <label>Selecione a região...</label>
-                    <select id="selecione-regiao" name="regiao" data-placeholder="Selecione a região..." class="d-flex" autocomplete="off">
-                        <option value="">Todas</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label>Selecione a província...</label>
-                    <select id="selecione-provincia" name="provincia" data-placeholder="Selecione a província..." autocomplete="off" disabled>
-                        <option value="">Todas</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <label>Selecione distrito...</label>
-                    <select id="selecione-distrito" name="distrito" data-placeholder="Selecione distrito..." autocomplete="off" disabled>
-                        <option value="">Todos</option>
-                    </select>
+
+                <span class="ver-opcoes-avancadas d-md-none text-center">Ver opções avançadas</span>
+                
+                <div class="col-md-9 aplicar-opcoes-avancadas d-none d-md-block" id="aplicar-opcoes-avancadas">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Selecione a região...</label>
+                            <select id="selecione-regiao" name="regiao" data-placeholder="Selecione a região..." class="d-flex" autocomplete="off">
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Selecione a província...</label>
+                            <select id="selecione-provincia" name="provincia" data-placeholder="Selecione a província..." autocomplete="off" disabled>
+                                <option value="">Todas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Selecione distrito...</label>
+                            <select id="selecione-distrito" name="distrito" data-placeholder="Selecione distrito..." autocomplete="off" disabled>
+                                <option value="">Todos</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row justify-content-center">
@@ -57,6 +64,10 @@
         provinciaSelecionada = new TomSelect("#selecione-provincia", { create: false, sortField: "text", persist: false,});
         distritoSelecionada = new TomSelect("#selecione-distrito", { create: false, sortField: "text", persist: false, });
         loadData();
+
+        $(".ver-opcoes-avancadas").click(function () {
+            $(this).toggleClass("active")
+        })
     });
     
     // Carregar dados da API

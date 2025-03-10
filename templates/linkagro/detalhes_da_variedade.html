@@ -98,8 +98,8 @@
                 <div class="col-12">
                     <div class="breadcrumb_content">
                         <ul>
-                            <li><a href="index.html">home</a></li>
-                            <li>product details</li>
+                            <li><a href="index.html">Página Inicial</a></li>
+                            <li>{{variedade.nome_variedade}}</li>
                         </ul>
                     </div>
                 </div>
@@ -113,7 +113,7 @@
         <div class="col-md-5">
             <div class="detalhe-produto shadow rounded-5">
                 <!-- Linha de conexão -->
-                <svg class="linha-conexao" viewBox="0 0 400 400">
+                <svg class="linha-conexao d-none" viewBox="0 0 400 400">
                     <path id="linha-svg" d=""></path>
                 </svg>
             
@@ -134,36 +134,45 @@
             </div>
         </div>
         <div class="col-md-7">
-            <div class="descricao-variedade p-2 bg-linkagro">
-                <div class="sessao-titulo-variedade shadow text-center  p-2 rounded-2">
+            <div class="descricao-variedade p-2 filtro-linkagro bg-white rounded-3">
+                <div class="sessao-titulo-variedade  p-2 ">
                     <h3 class="text-primary-linkagro">{{variedade.nome_variedade}}</h3>
+                    <span class="text-muted">{{variedade.descricao_variedade}} Descrição do produto</span>
+
                 </div>
 
                 <div class="informacoes-complementares p-2 border-top">
                     <div class="enderenco">
                         <span><i class="fa fa-location-dot"></i> {{variedade.distrito.distrito}}, {{variedade.provincia.provincia}}</span>
                     </div>
-                    <div class="descricao">
-                        <small>{{variedade.descricao_variedade}}</small>
-                    </div>
-                    <div class="preco">
+                    <div class="preco d-flex  flex-wrap gap-2 align-items-center h-100 w-100">
                         <h4>Preço:</h4>
-                        <span><Strong>{{variedade.preco_por_unidade}} MT</Strong>/{{variedade.quantidade_variedade}}{{variedade.unidade_variedade}}</span>
+                        <div><h3 class="text-dark">{{variedade.preco_por_unidade}} MT/{{variedade.quantidade_variedade}}{{variedade.unidade_variedade}}</h3></div>
                     </div>
-                    <div class="qualidade">
+
+                    <div class="preco d-flex  flex-wrap gap-2 align-items-center h-100 w-100">
                         <h4>Qualidade:</h4>
-                        <small>{{variedade.qualidade}}</small>
+                        <div><h3 class="text-dark">{{variedade.qualidade}}</h3></div>
                     </div>
                     
                 </div>
 
-                <div class="border shadow d-flex justify-content-center flex-column">
-                    <div class="icon-shop text-success"><i class="fa fa-shop"></i></div>
-                    <p>Para comprar este produto contacte-nos por:</p>
-                    <div class="group-button-action">
-                        <a href="tel:258850386545"><i class="fa fa-call"></i> (+258) 85 03 86 545</a>
-                        <a href="hhh"><i class="fa fa-call"></i> (+258) 85 03 86 545</button>
+                <div class="">
+                    <div class="produtor">
+                        <img src="{{variedade.produtor_variedade.logotipo.url}}" alt="{{variedade.produtor_variedade}}">
+                        <div class="info-produtor">
+                            <h4 class="text-dark">{{variedade.produtor_variedade}}</h4>
+                            <span class="text-muted">{{variedade.produtor_variedade.distrito}}, {{variedade.produtor_variedade.provincia}}</span>
+                            <div class="group-button-actio d-block">
+                                <a href="tel:258850386545" class="text-primary"><i class="fa fa-phone"></i> +258850386545</a> 
+                            </div>
+                            <div class="group-button-actio d-block">
+                                <a href="https://wa.me/258850386545" class="text-primary"><i class="fab fa-whatsapp"></i> +258850386545</a>
+                            </div>
+                        </div>
                     </div>
+                    
+                    
                 </div>
             </div>
 
@@ -172,609 +181,118 @@
 </section>
 
 
-<!--product details start-->
-    <div class="product_details mt-70 mb-70">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6 col-md-6">
-                    <div class="product-details-tab">
-                        <div id="img-1" class="zoomWrapper single-zoom">
-                            <a href="#">
-                                <img id="zoom1" src="assets/img/product/productbig4.jpg" data-zoom-image="assets/img/product/productbig4.jpg" alt="big-1">
-                            </a>
+<section class="container mb-3">
+    <h1 class="text-center">Produtos do Mesmo Produtor</h1>
+
+    <div class="row">
+        {% for variedade in outras_variedades %}
+        <div class="col-md-3 col-12 mb-3 animate__animated animate__zoomIn z-index-0">
+            <a href="{% url 'linkagro_detalhe_variedade' variedade.slug_variedade %}" title="{{variedade.nome_variedade}}">
+                <div class="card-variedade">
+                    <div class="position-relative">
+                        <div class="card-variedade-imagem p-2">
+                            <img src="{{variedade.imagem_variedade.url}}" class="img-fluid" alt="{{variedade.nome_variedade}}">
                         </div>
-                        <div class="single-zoom-thumb">
-                            <ul class="s-tab-zoom owl-carousel single-product-active" id="gallery_01">
-                                <li>
-                                    <a href="#" class="elevatezoom-gallery active" data-update="" data-image="assets/img/product/productbig4.jpg" data-zoom-image="assets/img/product/productbig4.jpg">
-                                        <img src="assets/img/product/productbig4.jpg" alt="zo-th-1"/>
-                                    </a>
 
-                                </li>
-                                <li >
-                                    <a href="#" class="elevatezoom-gallery active" data-update="" data-image="assets/img/product/productbig1.jpg" data-zoom-image="assets/img/product/productbig1.jpg">
-                                        <img src="assets/img/product/productbig1.jpg" alt="zo-th-1"/>
-                                    </a>
+                        <div class="card-variedade-conteudo mb-2">
+                            <div class="card-variedade-mais-info px-2 pb-2">
+                                <h5 class="card-variedade-titulo limite-texto-1">{{variedade.nome_variedade}} </h5>
+                                <div class="precos text-primary">
+                                    <h3>{{variedade.preco_por_unidade}} MT
+                                        <span>/ {{variedade.quantidade_variedade}}{{variedade.unidade_variedade}}</span>
+                                    </h3>
+                                </div>
 
-                                </li>
-                                <li >
-                                    <a href="#" class="elevatezoom-gallery active" data-update="" data-image="assets/img/product/productbig2.jpg" data-zoom-image="assets/img/product/productbig2.jpg">
-                                        <img src="assets/img/product/productbig2.jpg" alt="zo-th-1"/>
-                                    </a>
+                                <div class="qualidade d-none">
+                                    <span>Qualidade:</span><strong> {{variedade.qualidade_variedade}}</strong>
+                                </div>
 
-                                </li>
-                                <li >
-                                    <a href="#" class="elevatezoom-gallery active" data-update="" data-image="assets/img/product/productbig3.jpg" data-zoom-image="assets/img/product/productbig3.jpg">
-                                        <img src="assets/img/product/productbig3.jpg" alt="zo-th-1"/>
-                                    </a>
-
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6">
-                    <div class="product_d_right">
-                       <form action="#">
-                           
-                            <h1><a href="#">commodo augue nisi</a></h1>
-                            <div class="product_nav">
-                                <ul>
-                                    <li class="prev"><a href="product-details.html"><i class="fa fa-angle-left"></i></a></li>
-                                    <li class="next"><a href="variable-product.html"><i class="fa fa-angle-right"></i></a></li>
-                                </ul>
-                            </div>
-                            <div class=" product_ratting">
-                                <ul>
-                                    <li><a href="#"><i class="icon-star"></i></a></li>
-                                   <li><a href="#"><i class="icon-star"></i></a></li>
-                                   <li><a href="#"><i class="icon-star"></i></a></li>
-                                   <li><a href="#"><i class="icon-star"></i></a></li>
-                                   <li><a href="#"><i class="icon-star"></i></a></li>
-                                    <li class="review"><a href="#"> (customer review ) </a></li>
-                                </ul>
+                                <div class="localizacao limite-texto-1">
+                                    <span><i class="fa fa-location-dot"></i></span><span> {{variedade.distrito}}, {{variedade.provincia}}</span>
+                                </div>
                                 
-                            </div>
-                            <div class="price_box">
-                                <span class="current_price">£70.00</span>
-                                <span class="old_price">£80.00</span>
                                 
-                            </div>
-                            <div class="product_desc">
-                                <p>eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in </p>
-                            </div>
-                            <div class="product_variant color">
-                                <h3>Available Options</h3>
-                                <label>color</label>
-                                <ul>
-                                    <li class="color1"><a href="#"></a></li>
-                                    <li class="color2"><a href="#"></a></li>
-                                    <li class="color3"><a href="#"></a></li>
-                                    <li class="color4"><a href="#"></a></li>
-                                </ul>
-                            </div>
-                            <div class="product_variant quantity">
-                                <label>quantity</label>
-                                <input min="1" max="100" value="1" type="number">
-                                <button class="button" type="submit">add to cart</button>  
-                                
-                            </div>
-                            <div class=" product_d_action">
-                               <ul>
-                                   <li><a href="#" title="Add to wishlist">+ Add to Wishlist</a></li>
-                                   <li><a href="#" title="Add to wishlist">+ Compare</a></li>
-                               </ul>
-                            </div>
-                            <div class="product_meta">
-                                <span>Category: <a href="#">Clothing</a></span>
+
                             </div>
                             
-                        </form>
-                        <div class="priduct_social">
-                            <ul>
-                                <li><a class="facebook" href="#" title="facebook"><i class="fa fa-facebook"></i> Like</a></li>           
-                                <li><a class="twitter" href="#" title="twitter"><i class="fa fa-twitter"></i> tweet</a></li>           
-                                <li><a class="pinterest" href="#" title="pinterest"><i class="fa fa-pinterest"></i> save</a></li>           
-                                <li><a class="google-plus" href="#" title="google +"><i class="fa fa-google-plus"></i> share</a></li>        
-                                <li><a class="linkedin" href="#" title="linkedin"><i class="fa fa-linkedin"></i> linked</a></li>        
-                            </ul>      
                         </div>
-
                     </div>
                 </div>
+            </a>
+        </div>
+        {% empty%}
+        <div class="col-12 mb-3 animate__animated animate__zoomIn z-index-0">
+            <div class="message-container">
+                <h1>Ops! Nada encontrado...</h1>
+                <p>Infelizmente, não temos produtos disponíveis neste momento. Mas não desanime!</p>
+            
+                <div class="drawer-container shadow">
+                    <div class="drawer"></div>
+                </div>
+            
+                <div class="empty-msg">Produtos Indisponíveis!</div>
             </div>
-        </div>    
+        </div>
+        {% endfor %}
     </div>
-    <!--product details end-->
+</section>
     
-    <!--product info start-->
-    <div class="product_d_info mb-65">
-        <div class="container">   
-            <div class="row">
-                <div class="col-12">
-                    <div class="product_d_inner">   
-                        <div class="product_info_button">    
-                            <ul class="nav" role="tablist" id="nav-tab">
-                                <li >
-                                    <a class="active" data-toggle="tab" href="#info" role="tab" aria-controls="info" aria-selected="false">Description</a>
-                                </li>
-                                <li>
-                                     <a data-toggle="tab" href="#sheet" role="tab" aria-controls="sheet" aria-selected="false">Specification</a>
-                                </li>
-                                <li>
-                                   <a data-toggle="tab" href="#reviews" role="tab" aria-controls="reviews" aria-selected="false">Reviews (1)</a>
-                                </li>
-                            </ul>
+
+<section class="container mb-3">
+    <h1 class="text-center">Produtos Relacionados</h1>
+
+    <div class="row">
+        {% for variedade in variedades_relacionadas %}
+        <div class="col-md-3 col-12 mb-3 animate__animated animate__zoomIn z-index-0">
+            <a href="{% url 'linkagro_detalhe_variedade' variedade.slug_variedade %}" title="{{variedade.nome_variedade}}">
+                <div class="card-variedade">
+                    <div class="position-relative">
+                        <div class="card-variedade-imagem p-2">
+                            <img src="{{variedade.imagem_variedade.url}}" class="img-fluid" alt="{{variedade.nome_variedade}}">
                         </div>
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="info" role="tabpanel" >
-                                <div class="product_info_content">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam fringilla augue nec est tristique auctor. Donec non est at libero vulputate rutrum. Morbi ornare lectus quis justo gravida semper. Nulla tellus mi, vulputate adipiscing cursus eu, suscipit id nulla.</p>
-                                    <p>Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget.</p>
-                                </div>    
-                            </div>
-                            <div class="tab-pane fade" id="sheet" role="tabpanel" >
-                                <div class="product_d_table">
-                                   <form action="#">
-                                        <table>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="first_child">Compositions</td>
-                                                    <td>Polyester</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="first_child">Styles</td>
-                                                    <td>Girly</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="first_child">Properties</td>
-                                                    <td>Short Dress</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </form>
+
+                        <div class="card-variedade-conteudo mb-2">
+                            <div class="card-variedade-mais-info px-2 pb-2">
+                                <h5 class="card-variedade-titulo limite-texto-1">{{variedade.nome_variedade}} </h5>
+                                <div class="precos text-primary">
+                                    <h3>{{variedade.preco_por_unidade}} MT
+                                        <span>/ {{variedade.quantidade_variedade}}{{variedade.unidade_variedade}}</span>
+                                    </h3>
                                 </div>
-                                <div class="product_info_content">
-                                    <p>Fashion has been creating well-designed collections since 2010. The brand offers feminine designs delivering stylish separates and statement dresses which have since evolved into a full ready-to-wear collection in which every item is a vital part of a woman's wardrobe. The result? Cool, easy, chic looks with youthful elegance and unmistakable signature style. All the beautiful pieces are made in Italy and manufactured with the greatest attention. Now Fashion extends to a range of accessories including shoes, hats, belts and more!</p>
-                                </div>    
-                            </div>
 
-                            <div class="tab-pane fade" id="reviews" role="tabpanel" >
-                                <div class="reviews_wrapper">
-                                    <h2>1 review for Donec eu furniture</h2>
-                                    <div class="reviews_comment_box">
-                                        <div class="comment_thmb">
-                                            <img src="assets/img/blog/comment2.jpg" alt="">
-                                        </div>
-                                        <div class="comment_text">
-                                            <div class="reviews_meta">
-                                                <div class="star_rating">
-                                                    <ul>
-                                                        <li><a href="#"><i class="icon-star"></i></a></li>
-                                                       <li><a href="#"><i class="icon-star"></i></a></li>
-                                                       <li><a href="#"><i class="icon-star"></i></a></li>
-                                                       <li><a href="#"><i class="icon-star"></i></a></li>
-                                                       <li><a href="#"><i class="icon-star"></i></a></li>
-                                                    </ul>   
-                                                </div>
-                                                <p><strong>admin </strong>- September 12, 2018</p>
-                                                <span>roadthemes</span>
-                                            </div>
-                                        </div>
-                                        
-                                    </div>
-                                    <div class="comment_title">
-                                        <h2>Add a review </h2>
-                                        <p>Your email address will not be published.  Required fields are marked </p>
-                                    </div>
-                                    <div class="product_ratting mb-10">
-                                       <h3>Your rating</h3>
-                                        <ul>
-                                            <li><a href="#"><i class="icon-star"></i></a></li>
-                                               <li><a href="#"><i class="icon-star"></i></a></li>
-                                               <li><a href="#"><i class="icon-star"></i></a></li>
-                                               <li><a href="#"><i class="icon-star"></i></a></li>
-                                               <li><a href="#"><i class="icon-star"></i></a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="product_review_form">
-                                        <form action="#">
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <label for="review_comment">Your review </label>
-                                                    <textarea name="comment" id="review_comment" ></textarea>
-                                                </div> 
-                                                <div class="col-lg-6 col-md-6">
-                                                    <label for="author">Name</label>
-                                                    <input id="author"  type="text">
+                                <div class="qualidade d-none">
+                                    <span>Qualidade:</span><strong> {{variedade.qualidade_variedade}}</strong>
+                                </div>
 
-                                                </div> 
-                                                <div class="col-lg-6 col-md-6">
-                                                    <label for="email">Email </label>
-                                                    <input id="email"  type="text">
-                                                </div>  
-                                            </div>
-                                            <button type="submit">Submit</button>
-                                         </form>   
-                                    </div> 
-                                </div>     
+                                <div class="localizacao limite-texto-1">
+                                    <span><i class="fa fa-location-dot"></i></span><span> {{variedade.distrito}}, {{variedade.provincia}}</span>
+                                </div>
+                                
+                                
+
                             </div>
+                            
                         </div>
-                    </div>     
+                    </div>
                 </div>
+            </a>
+        </div>
+        {% empty%}
+        <div class="col-12 mb-3 animate__animated animate__zoomIn z-index-0">
+            <div class="message-container">
+                <h1>Ops! Nada encontrado...</h1>
+                <p>Infelizmente, não temos produtos disponíveis neste momento. Mas não desanime!</p>
+            
+                <div class="drawer-container shadow">
+                    <div class="drawer"></div>
+                </div>
+            
+                <div class="empty-msg">Produtos Indisponíveis!</div>
             </div>
-        </div>    
-    </div>  
-    <!--product info end-->
-    
-    <!--product area start-->
-    <section class="product_area related_products">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="section_title">
-                        <h2>Related Products	</h2>
-                    </div>
-                </div>
-            </div> 
-            <div class="row">
-                <div class="col-12">
-                    <div class="product_carousel product_column5 owl-carousel">
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product20.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product21.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                        <span class="label_new">New</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Quisque In Arcu</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$55.00</span>
-                                        <span class="old_price">$235.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product15.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product14.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Cas Meque Metus</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$26.00</span>
-                                        <span class="old_price">$362.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product17.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product16.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Aliquam Consequat</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$26.00</span>
-                                        <span class="old_price">$362.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product14.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product15.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                        <span class="label_new">New</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Mauris Vel Tellus</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$48.00</span>
-                                        <span class="old_price">$257.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product16.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product17.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Nunc Neque Eros</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$35.00</span>
-                                        <span class="old_price">$245.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product18.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product19.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Proin Lectus Ipsum</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$26.00</span>
-                                        <span class="old_price">$362.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                    </div>
-                </div>
-            </div>  
         </div>
-    </section>
-    <!--product area end-->
-    
-     <!--product area start-->
-    <section class="product_area upsell_products">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="section_title">
-                        <h2>Upsell Products	</h2>
-                    </div>
-                </div>
-            </div> 
-            <div class="row">
-                <div class="col-12">
-                    <div class="product_carousel product_column5 owl-carousel">
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product1.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product2.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Proin Lectus Ipsum</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$26.00</span>
-                                        <span class="old_price">$362.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product9.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product4.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                        <span class="label_new">New</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Quisque In Arcu</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$55.00</span>
-                                        <span class="old_price">$235.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product13.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product1.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                        <span class="label_new">New</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Mauris Vel Tellus</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$48.00</span>
-                                        <span class="old_price">$257.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product12.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product2.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Nunc Neque Eros</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$35.00</span>
-                                        <span class="old_price">$245.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product1.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product2.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                        <span class="label_new">New</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Aliquam Consequat</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$26.00</span>
-                                        <span class="old_price">$362.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                        <article class="single_product">
-                            <figure>
-                                <div class="product_thumb">
-                                    <a class="primary_img" href="product-details.html"><img src="assets/img/product/product3.jpg" alt=""></a>
-                                    <a class="secondary_img" href="product-details.html"><img src="assets/img/product/product4.jpg" alt=""></a>
-                                    <div class="label_product">
-                                        <span class="label_sale">Sale</span>
-                                    </div>
-                                    <div class="action_links">
-                                        <ul>
-                                            <li class="add_to_cart"><a href="cart.html" data-tippy="Add to cart" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"> <span class="lnr lnr-cart"></span></a></li>
-                                           <li class="quick_button"><a href="#" data-tippy="quick view" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true" data-bs-toggle="modal" data-bs-target="#modal_box" > <span class="lnr lnr-magnifier"></span></a></li>
-                                             <li class="wishlist"><a href="wishlist.html" data-tippy="Add to Wishlist" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-heart"></span></a></li> 
-                                            <li class="compare"><a href="#" data-tippy="Add to Compare" data-tippy-placement="top" data-tippy-arrow="true" data-tippy-inertia="true"><span class="lnr lnr-sync"></span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <figcaption class="product_content">
-                                    <h4 class="product_name"><a href="product-details.html">Donec Non Est</a></h4>
-                                    <p><a href="#">Fruits</a></p>
-                                    <div class="price_box"> 
-                                        <span class="current_price">$46.00</span>
-                                        <span class="old_price">$382.00</span>
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </article>
-                    </div>
-                </div>    
-            </div>   
-        </div>
-    </section>
-    <!--product area end-->
+        {% endfor %}
+    </div>
+</section>
 
 <script>
     function distribuirImagens() {
@@ -785,17 +303,17 @@
         const raio = 150; // Distância das imagens circulares ao centro
         const totalImagens = imagens.length;
 
-        let pathData = `M ${centroX} ${centroY} `; // Inicia a linha SVG do centro
+        let pathData = `M {{centroX} {{centroY} `; // Inicia a linha SVG do centro
 
         imagens.forEach((img, index) => {
             const angulo = (index / totalImagens) * (2 * Math.PI); // Calcula o ângulo de cada imagem
             const x = centroX + raio * Math.cos(angulo) - img.offsetWidth / 2;
             const y = centroY + raio * Math.sin(angulo) - img.offsetHeight / 2;
             
-            img.style.left = `${x}px`;
-            img.style.top = `${y}px`;
+            img.style.left = `{{x}px`;
+            img.style.top = `{{y}px`;
 
-            pathData += `L ${x + img.offsetWidth / 2} ${y + img.offsetHeight / 2} `; // Liga a linha SVG até a imagem
+            pathData += `L {{x + img.offsetWidth / 2} {{y + img.offsetHeight / 2} `; // Liga a linha SVG até a imagem
         });
 
         pathData += "Z"; // Fecha o caminho para conectar a última imagem à primeira
