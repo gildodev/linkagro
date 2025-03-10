@@ -65,10 +65,7 @@
 
         loadData()
         attachEventListeners()
-        setTimeout(function () {
-            $('.drawer').addClass('open');
-            document.querySelector('.empty-msg').style.opacity = 1;
-        }, 500);
+        
 
         console.log("O DOM foi carregado, agora você pode manipular os elementos.");
     });
@@ -259,7 +256,7 @@
             ha_prox_pag=produtosData.ha_proxima_pagina;
             ha_pag_ant=produtosData.ha_pagina_anterior;
 
-            
+            $("#total-produtos").text(total_produtos)
             pagina_actual=produtosData.pagina_actual;
             regioes = enderecosData.regioes;
             provincias = enderecosData.provincias;
@@ -279,14 +276,16 @@
             selectDistrito.disable();
 
             aplicarFiltros();
-            $('#loading-spinner').toggleClass("active")
             activarPaginacao();
+            $('#loading-spinner').toggleClass("active")
 
 
         }).catch(error => {
             console.error("Erro ao carregar os dados:", error);
             alert("Erro ao carregar os dados. Verifique a API!");
+            $('#loading-spinner').toggleClass("active")
         });
+        
     }
 
 
@@ -323,11 +322,8 @@
 
         Promise.all([
             $.get(`http://localhost:3000/api/produtos-categoria/${slug_categoria}/?page=${pagina}`),
-            $.get(`http://localhost:3000/api/enderecos-geograficos-produtores/`),
-            $.get(`http://localhost:3000/api/produtos-categoria/${slug_categoria}/proximas-colheitas/`),
-        ]).then(([produtosData, enderecosData, proximasColheitas]) => {
+        ]).then(([produtosData]) => {
             variedades_activas = produtosData.variedades_activas;
-            variedades_proximas_colheitas = proximasColheitas.variedades_proximas_colheitas;
             total_produtos=produtosData.total_produtos;
             total_paginas=produtosData.total_paginas;
             proxima_pagina=produtosData.proxima_pagina;
@@ -337,30 +333,17 @@
             ha_prox_pag=produtosData.ha_proxima_pagina;
             ha_pag_ant=produtosData.ha_pagina_anterior;
 
-            regioes = enderecosData.regioes;
-            provincias = enderecosData.provincias;
-            distritos = enderecosData.distritos;
-            localidades = enderecosData.localidades;
-
-            // Popular dropdowns
-            selectRegiao.clear();
-            selectRegiao.addOption({ value: "", text: "Todas" });
-            regioes.forEach(regiao => {
-                selectRegiao.addOption({ value: regiao.id, text: regiao.regiao });
-            });
-
-            selectProvincia.clear();
-            selectProvincia.disable();
-            selectDistrito.clear();
-            selectDistrito.disable();
 
             aplicarFiltros();
-            $('#loading-spinner').toggleClass("active")
+            
             activarPaginacao()
+            $('#loading-spinner').toggleClass("active")
         }).catch(error => {
             console.error("Erro ao carregar os dados:", error);
             alert("Erro ao carregar os dados. Verifique a API!");
+            $('#loading-spinner').toggleClass("active")
         });
+        
     }
 
 
@@ -382,7 +365,6 @@
                 </div>`
             );
 
-            $('#btn-continuar-vendo-itens').addClass("d-none")
             
         }else{
             
@@ -409,8 +391,8 @@
                                                 <span>Qualidade:</span><strong> ${variedade.qualidade_variedade}</strong>
                                             </div>
 
-                                            <div class="localizacao ">
-                                                <span><i class="fa fa-location-dot"></i></span><span> ${variedade.distrito}</span>
+                                            <div class="localizacao limite-texto-1">
+                                                <span><i class="fa fa-location-dot"></i></span><span> ${variedade.distrito}, ${variedade.provincia}</span>
                                             </div>
                                             ${verproduto==1?`<div class="epoca-colheita  text-success">
                                                 <span><i class="fa fa-calendar pe-2"></i></span><span> ${variedade.data_inicio_colheita}</span>
@@ -475,8 +457,8 @@
                                                 <span>Qualidade:</span><strong> ${variedade.qualidade_variedade}</strong>
                                             </div>
 
-                                            <div class="localizacao ">
-                                                <span><i class="fa fa-location-dot"></i></span><span> ${variedade.distrito}</span>
+                                            <div class="localizacao limite-texto-1">
+                                                <span><i class="fa fa-location-dot"></i></span><span> ${variedade.distrito}, ${variedade.provincia}</span>
                                             </div>
                                             ${verproduto==1?`<div class="epoca-colheita  text-success">
                                                 <span><i class="fa fa-calendar pe-2"></i></span><span> ${variedade.data_inicio_colheita}</span>
@@ -506,11 +488,6 @@
 
 {% block content %}
 <input type="hidden" name="slug_categoria" value="{{categoria.slug_categoria}}" id="slug_categoria">
-
-<section class="container my-3">
-    
-</section> 
-
 
 <section class="container mb-3">
     <div class="row">
@@ -613,13 +590,16 @@
                 <div class="card-lista-produtos-header shadow p-2  bg-white rounded-3 ">
                     <div class="row">
                         <div class="col-md-4 mb-2 ">
-                            <div class="ordqualver">
+                            <div class="ordqualver d-none">
                                 <label for="ver">Ver: </label> 
                                 <select name="ver" id="ver" class="" autocomplete="off">
                                     <option value="0">produtos activos</option>
                                     <option value="1">próximas colheitas</option>
                                 </select>
                             </div>
+
+                            <span>Total de produtos:</span>
+                            <h4 id="total-produtos">0</h4>
                         </div>
 
                         
@@ -644,7 +624,7 @@
 
                 <div class="card-lista-produtos-body py-2">
                     <div class="sessao-lista-produto">
-                        <div id="loading-spinner" class="text-center ">
+                        <div id="loading-spinner" class="text-center loading-spinner">
                             <div class="spinner-border text-primary" role="status">
                                 <span class="visually-hidden">Carregando...</span>
                             </div>
@@ -653,17 +633,6 @@
                         <!-- Exibir as variedades -->
                         <div id="variedades-container" class="row">
                             <!-- Aqui as variedades serão exibidas dinamicamente -->
-                            <div class="col-12 d-none">
-                                <div class="message-container">
-                                    <h1>Ops! Nada encontrado...</h1>
-                                    <p>Infelizmente, não temos produtos disponíveis neste momento. Mas não desanime!</p>
-                                
-                                    <div class="drawer-container shadow">
-                                        <div class="drawer"></div>
-                                    </div>
-                                
-                                </div>
-                            </div>
                         </div>
                     </div>
                     

@@ -3,20 +3,12 @@
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}"> 
-<style>
 
-</style>
 {% endblock css %}
 
 
 {% block js %}
 <script src="{% static 'js/owl.carousel.min.js' %}" defer></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
-
-
-
-
 
 <script>
     /*---background image---*/
@@ -67,7 +59,16 @@
                     </div>
                 </div>
             {% empty %}
-            <h1>Sem Anúncios</h1>
+            <div class="message-container mb-2">
+                <h1>Ops! Nada encontrado...</h1>
+                <p>Infelizmente, não temos anuncios disponíveis neste momento. Mas não desanime!</p>
+
+                <div class="drawer-container shadow">
+                    <div class="drawer"></div>
+                </div>
+
+                <div class="empty-msg">Anuncios indisponíveis!</div>
+            </div>
             {% endfor %}
 
         </div>
@@ -76,11 +77,12 @@
     </div>
 
     <div class="sessao-area-pesquisa mb-3">
-        {% include "includes/sessao_de_pesquisa.html" %}
+        {% include "includes/sessao_de_pesquisa.html" %} 
     </div>
 
+    
 
-    <section class="mb-3">
+    <section class="mb-3 ">
         <div class="sessao-titulo text-center">
             <h1>Categorias</h1>
         </div>
@@ -103,7 +105,7 @@
                     </a>
                 </div>
                 {% empty %}
-                    <p>Sem Catgeorias</p>
+                    <p>Sem Categorias</p>
                 {% endfor %}
 
             </div>
@@ -112,30 +114,32 @@
     </section>
     
 
-    <section class="mb-3">
+    <section class="mb-3 ">
         <div class="sessao-titulo text-center">
             <h1>Parceiros</h1>
         </div>
-
-        <article class="py-">
-            <div class="parceiros rounded-2  border-top">
-                <div class="parceiros-slider rounded-2 bg-transparent d-flex gap-2 p-2 justify-content-center">
-                    {% for parceiro in parceiros %}
-                    <a href="#">
-                        <div class="parceiro">
-                            <img src="{{parceiro.arquivo.url}}" class="rounded-2" alt="{{parceiro.arquivo.url}}" width="250" height="80">
+        
+        <!--brand area start-->
+        <div class="brand_area mb-5">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="brand_container owl-carousel border-top pt-3">
+                        {% for parceiro in parceiros %}
+                            <div class="single_brand">
+                                <a href="#"><img src="{{parceiro.arquivo.url}}" alt="{{parceiro}}"></a>
+                            </div>
+                        {% endfor %}
                         </div>
-                    </a>
-                    {% empty %}
-                        <p>Sem Parceiros</p>
-                    {% endfor %}
+                    </div>
                 </div>
             </div>
-        </article>
+        </div>
+        <!--brand area end-->
     </section>
 
 
-     <section class="mb-5">
+     <section class="mb-5 ">
         <div class="sessao-titulo text-center  border-bottom mb-2">
             <h1>Últimas Notícias</h1>
         </div>

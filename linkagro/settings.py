@@ -1,4 +1,11 @@
 import os
+from dotenv import load_dotenv
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+# Carregar variáveis do arquivo .env
+load_dotenv()
 
 from pathlib import Path
 
@@ -10,12 +17,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7l)$)t^o*m8&osb7d*lwn5-3*kxofe%5@=x*ef6jjrd(7+6iq9'
+SECRET_KEY = os.getenv("SECRET_KEY")
+DEBUG = os.getenv("DEBUG") == "True"  # Converte string para booleano
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ALLOWED_HOSTS = ["*"]
 
-ALLOWED_HOSTS = []
+
+# Configurar armazenamento de arquivos
+ 
+cloudinary.config( 
+    cloud_name =  os.getenv("CLOUD_NAME"), 
+    api_key = os.getenv("API_KEY"), 
+    api_secret = os.getenv("API_SECRET"), # Click 'View API Keys' above to copy your API secret
+    secure=True
+)
+
+
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Application definition
@@ -28,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "whitenoise.runserver_nostatic",  # Evita conflitos com `runserver`
 
     # Instalacao de apps
     'ninja',
@@ -43,8 +63,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware", #adicao de um novo middleware
-
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # Adiciona WhiteNoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -58,6 +78,13 @@ MIDDLEWARE = [
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = ["http://localhost:3000"]  # React app URL
 CSRF_TRUSTED_ORIGINS = ['http://localhost:3000']
+
+SECURE_SSL_REDIRECT = False  # Redireciona todo tráfego HTTP para HTTPS
+SESSION_COOKIE_SECURE = False  # Cookies apenas via HTTPS
+CSRF_COOKIE_SECURE = False  # Protege cookies CSRF com HTTPS
+SECURE_HSTS_SECONDS = 31536000  # Ativa HSTS para 1 ano
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
 
 
 
@@ -92,14 +119,16 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     },
 
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Usando o backend do MySQL
-        'NAME': 'linkagro',      # Nome do banco de dados
-        'USER': 'root',               # Usuário do MySQL
-        'PASSWORD': 'AgPnZXKeKqnhhuQXYjXbRmSYgXNFtbij',             # Senha do usuário
-        'HOST': 'switchyard.proxy.rlwy.net',                   # Ou o endereço do servidor MySQL
-        'PORT': '330699',                        # Porta do MySQL (padrão 3306)
+    
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.getenv("DATABASE_NAME"),
+        "USER": os.getenv("DATABASE_USER"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+        "HOST": os.getenv("DATABASE_HOST", "localhost"),
+        "PORT": os.getenv("DATABASE_PORT", "3306"),
     }
+
 }
 
 
@@ -143,9 +172,9 @@ USE_TZ = True
 
 
 # Configuração de arquivos estáticos
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]  # Pasta onde estão os arquivos estáticos
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Pasta onde os arquivos estáticos serão coletados
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"  # Diretório onde os arquivos serão coletados
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"  # Gzip + Cache-Busting
 
 # Configuração de arquivos de mídia
 MEDIA_URL = '/media/'

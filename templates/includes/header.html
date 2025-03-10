@@ -1,6 +1,6 @@
 <!-- Navbar Glassmorphism -->
-<header class="animate__animated animate__zoomIn sticky-top" id="navbar">
-    <div class="header container">
+<header class="sticky-top" id="navbar">
+    <div class="header container animate__animated animate__zoomIn">
         <nav class="navbar navbar-expand-md pt-0 mt-0">
             <div class="container">
                 <!-- brand -->
@@ -83,98 +83,5 @@
     </div>
 </header>
 
-
-
-<!-- JavaScript -->
-<script defer>
-    $(document).ready(function () {
-        let navbar = $("#navbar");
-        let subnav = $("#show-only-scroll-down");
-        let area_pesquisa = $("#area-pesquisa");
-        let area_navegacao = $("#area-navegacao");
-        let area_pesquisa_btn = $("#btn-search-close");
-        let area_pesquisa_btn_close = $("#navbar-btn-closed");
-        let menu_navegacao=$("#menu-navegacao-mobile");
-        let btn_pesquisar=$("#btn-pesquisar");
-        let btn_close_menu=$("#btn-close-menu");
-        let abrir_menu = $("#abrir-menu");
-        let navbarHeight = navbar.outerHeight() - 5;
-        let verificar_se_clicou_btn_pesquisa=true;
-        let verificar_se_clicou_abrir_menu=true;
-
-        
-
-
-
-        $(window).on("scroll", function () {
-
-            // if ($(this).scrollTop() > navbarHeight) {
-            //     subnav.removeClass("animate__slideInDown animate__fadeOutUp z-n-1")
-            //         .addClass("active animate__slideInDown");
-            // } else {
-            //     subnav.removeClass("animate__slideInDown")
-            //         .addClass("animate__fadeOutUp z-n-1");
-            //     if($(this).scrollTop() == 0){
-            //         subnav.removeClass("active");
-            //     }
-            // }
-        });
-
-        $(area_pesquisa_btn).on("click", function () {
-
-            if (verificar_se_clicou_btn_pesquisa) {
-                area_navegacao.addClass("animate__slideInDown")
-                area_pesquisa.addClass("active animate__slideInDown");
-                area_pesquisa_btn.addClass("active")
-                verificar_se_clicou_btn_pesquisa=false;
-            } else {
-                
-                area_pesquisa.removeClass("active animate__slideInUp ")
-                area_navegacao.addClass("animate__slideInDown")
-                area_pesquisa_btn.removeClass("active")
-                verificar_se_clicou_btn_pesquisa=true;
-            }
-            
-        });
-
-        $(area_pesquisa_btn_close).on("click", function () {
-
-            if (verificar_se_clicou_btn_pesquisa) {
-                area_navegacao.addClass("animate__slideInDown")
-                area_pesquisa.addClass("active animate__slideInDown");
-
-                verificar_se_clicou_btn_pesquisa=false;
-            } else {
-                
-                area_pesquisa.removeClass("active animate__slideInUp ")
-                area_navegacao.addClass("animate__slideInDown")
-                verificar_se_clicou_btn_pesquisa=true;
-            }
-
-        });
-
-        // Abrir menu
-        $(abrir_menu).on("click", function () {
-
-            if (verificar_se_clicou_abrir_menu) {
-                abrir_menu.addClass("active")
-                menu_navegacao.removeClass("animate__fadeOutLeft")
-                menu_navegacao.addClass("active animate__fadeInLeftBig")
-                verificar_se_clicou_abrir_menu=false;
-            }
-        });
-        
-        $(btn_close_menu).on("click", function () {
-
-            if (!verificar_se_clicou_abrir_menu) {
-                
-                abrir_menu.removeClass("active")
-                menu_navegacao.addClass("animate__fadeOutLeft")
-                verificar_se_clicou_abrir_menu=true;
-            }
-        });
-    });
-
-</script>
 
 

@@ -3,7 +3,7 @@ from ninja.security import django_auth
 from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
 from .models import *
-from typing import List
+from typing import List, Optional
 from django.shortcuts import get_object_or_404
 from .schemas import *
 from rest_framework.reverse import reverse
@@ -11,6 +11,7 @@ from django.utils import timezone
 from datetime import timedelta
 from ninja.pagination import paginate, PageNumberPagination
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 api = NinjaAPI()
@@ -296,11 +297,6 @@ def get_produto_varirdades(request, slug_produto: str, page: int = 1):
     # Obter o produto com base no slug_produto
     produto = get_object_or_404(Produto, slug_produto=slug_produto)
 
-    # Obter todas as regiões, províncias, distritos e localidades
-    regioes = Regiao.objects.all()
-    provincias = Provincia.objects.all()
-    distritos = Distrito.objects.all()
-    localidades = Localidade.objects.all()
     
     variedades_ativas = Variedade.objects.filter(
         produto_variedade=produto,
@@ -366,11 +362,7 @@ def get_produto_varirdades(request, slug_produto: str, page: int = 1):
 
     # Criar a resposta com todos os dados
     return {
-        "regioes": [RegiaoSchema.from_orm(regiao) for regiao in regioes],
-        "provincias": [ProvinciaSchema.from_orm(provincia) for provincia in provincias],
-        "distritos": [DistritoSchema.from_orm(distrito) for distrito in distritos],
-        "localidades": [LocalidadeSchema.from_orm(localidade) for localidade in localidades],
-        "variedades": [VariedadeSchema.from_orm(variedade) for variedade in variedades], 
+        "variedades_activas": [VariedadeSchema.from_orm(variedade) for variedade in variedades], 
         "total_produtos": paginator.count,  # Total de veículos
         "pagina_actual": pagina.number,  # Página atual
         "total_paginas": paginator.num_pages,  # Total de páginas
@@ -397,5 +389,102 @@ def get_todos_enderecos_geograficos_produtores(request):
         "distritos": [DistritoSchema.from_orm(distrito) for distrito in distritos],
         "localidades": [LocalidadeSchema.from_orm(localidade) for localidade in localidades],
     }
+
+
+# Retornar produtos pesquisados
+@api.get("pesquisa")
+def pesquisar_variedades(
+        request, 
+        page: Optional[int] =1,
+        q: Optional[str] = None, 
+        regiao: Optional[str] = None, 
+        provincia: Optional[str] = None, 
+        distrito: Optional[str] = None
+    ):
+    
+    # Definindo a data atual
+    data_atual = timezone.now().date()
+
+    variedades_ativas = Variedade.objects.filter(activo=True, data_inicio_colheita__lte=data_atual, data_fim_colheita__gte=data_atual)
+
+    # Aplicando os filtros corretamente
+    if q:
+        variedades_ativas = variedades_ativas.filter(nome_variedade__icontains=q)
+    if regiao:
+        variedades_ativas = variedades_ativas.filter(provincia__regiao__pk=regiao)
+    if provincia:
+        variedades_ativas = variedades_ativas.filter(provincia__pk=provincia)
+    if distrito:
+        variedades_ativas = variedades_ativas.filter(distrito__pk=distrito)
+
+
+    # Cria um Paginator com 10 veículos por página
+    paginator = Paginator(variedades_ativas, 1)
+    
+    # Obtém a página solicitada
+    pagina = paginator.get_page(page)
+
+    variedades_lista_activa=[]
+
+
+    for variedade in pagina:
+        
+        variedades_lista_activa.append(
+            {
+                "id": variedade.id,
+                "nome_variedade": variedade.nome_variedade,
+                "produto_associado": {
+                    "id": variedade.produto_variedade.id,
+                    "nome_produto": variedade.produto_variedade.nome_produto,
+                    "slug_produto": variedade.produto_variedade.slug_produto
+                },
+                "id_produto_associado": variedade.produto_variedade.id,
+                "produtor_associado": {
+                    "id": variedade.produtor_variedade.id,
+                    "nome_empresa": variedade.produtor_variedade.nome_empresa or "",  # Se estiver vazio, passa uma string vazia
+                    "user": variedade.produtor_variedade.user.id
+                },
+
+                "id_produtor_associado": variedade.produtor_variedade.id,
+                "detalhes_link":  reverse('linkagro_detalhe_variedade', kwargs={'varied': variedade.slug_variedade}, request=request),
+                "imagem_default": variedade.imagem_variedade().url if variedade.imagem_variedade else None,
+
+                "galeria_variedade": [
+                    {"imagem_variedade": img.imagem_variedade.url, "default": img.default}
+                    for img in variedade.variedade_galerias.all()
+                ],
+                "descricao_variedade": variedade.descricao_variedade,
+                "preco_por_unidade": str(variedade.preco_por_unidade),
+                "unidade_variedade": variedade.unidade_variedade,
+                "estoque_variedade": variedade.estoque_variedade,
+                "quantidade_variedade": variedade.quantidade_variedade,
+                "qualidade_variedade": variedade.qualidade,
+                "epoca_de_colheita": variedade.epoca_de_colheita,
+                "data_inicio_colheita": variedade.data_inicio_colheita.isoformat(),
+                "data_fim_colheita": variedade.data_fim_colheita.isoformat(),
+                "id_regiao": variedade.provincia.regiao.pk,
+                "id_provincia": variedade.provincia.id,
+                "provincia": variedade.provincia.provincia,  # Assumindo que você tem uma relação com `provincia`
+                "id_distrito": variedade.distrito.id,
+                "distrito": variedade.distrito.distrito,
+                "id_localidade": variedade.localidade.pk if variedade.localidade else 0,
+                "localidade": variedade.localidade.localidade if variedade.localidade else "",
+            }
+        )
+
+    # Criar a resposta com todos os dados
+    return {
+        "variedades_activas": [VariedadeSchema.from_orm(variedade) for variedade in variedades_lista_activa], 
+        "total_produtos": paginator.count,  # Total de veículos
+        "pagina_actual": pagina.number,  # Página atual
+        "total_paginas": paginator.num_pages,  # Total de páginas
+        "proxima_pagina": pagina.next_page_number() if pagina.has_next() else False,
+        "pagina_anterior": pagina.previous_page_number() if pagina.has_previous() else False,
+        "ha_proxima_pagina": pagina.has_next(),  # Se há próxima página
+        "ha_pagina_anterior": pagina.has_previous(),  # Se há página anterior
+    }
+
+
+
 
 

@@ -3,4 +3,5 @@ activate.bat
 meuDB.txt
 run.bat
 reload_templates.bat
-
+static
+media

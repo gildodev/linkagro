@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
 from app.models import *
-
+import cloudinary
+from cloudinary.models import CloudinaryField
 
 # Modelo para Anúncios
 class Banner(models.Model):
@@ -14,7 +15,7 @@ class Banner(models.Model):
     descricao = models.TextField()
     # link_banner=models.URLField(blank=True, null=True, unique=True)
     tipo = models.CharField(max_length=10, choices=TIPO_ANUNCIO, default="Imagem")
-    arquivo = models.FileField(upload_to='linkagro_banners/')
+    arquivo = CloudinaryField('linkagro_banners/')
     activo=models.BooleanField(default=False)
     mostrar_texto=models.BooleanField(default=True)
     criado_em = models.DateTimeField(auto_now_add=True)
@@ -26,7 +27,7 @@ class Banner(models.Model):
 
 class Parceiros(models.Model):
     titulo = models.CharField(max_length=255)
-    arquivo = models.FileField(upload_to='linkagro_parceiros/')
+    arquivo = CloudinaryField('linkagro_parceiros/')
     mostrar_texto=models.BooleanField(default=False)
     criado_em = models.DateTimeField(auto_now_add=True)
 

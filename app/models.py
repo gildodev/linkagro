@@ -7,7 +7,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from datetime import timedelta
-
+import cloudinary
+from cloudinary.models import CloudinaryField
 
 
 # Modelo para Regiões
@@ -52,7 +53,7 @@ def renomear_uploaded_file(instance, filename):
 
 class Produtor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='produtor')
-    logotipo = models.ImageField(upload_to=renomear_uploaded_file, null=True, blank=True)
+    logotipo = CloudinaryField('linkagro_produtor', null=True, blank=True)
     nome_empresa = models.CharField(max_length=100, null=True, blank=True)
     slogan = models.CharField(max_length=255, null=True, blank=True)
     telefone = PhoneNumberField(null=True, blank=True)
@@ -108,8 +109,8 @@ def renomear_uploaded_categoria_banner(instance, filename):
 
 # Modelo para Categorias de Produtos
 class Categoria(models.Model):
-    imagem_categoria = models.ImageField(upload_to=renomear_uploaded_categoria)
-    banner_categoria = models.ImageField(upload_to=renomear_uploaded_categoria_banner)
+    imagem_categoria = CloudinaryField('linkagro_categorias')
+    banner_categoria = CloudinaryField('linkagro_categorias/banner')
     nome_categoria = models.CharField(max_length=255, unique=True)
     slug_categoria = models.SlugField(max_length=120, unique=True, blank=True)
     descricao_categoria = models.TextField(blank=True, null=True)
@@ -139,7 +140,7 @@ def renomear_uploaded_produto(instance, filename):
 # Modelo para Produtos Agrários
 class Produto(models.Model):
     nome_produto = models.CharField(max_length=255)
-    imagem_produto = models.ImageField(upload_to=renomear_uploaded_produto)
+    imagem_produto = CloudinaryField('linkagro_categorias/produtos/')
     categoria_produto = models.ForeignKey(Categoria, on_delete=models.CASCADE, related_name='categoria_produtos')
     descricao_produto = models.TextField(blank=True, null=True)
     slug_produto = models.SlugField(max_length=120, unique=True, blank=True)
@@ -247,7 +248,7 @@ def renomear_uploaded_variedade(instance, filename):
 
 class GaleriaVariedade(models.Model):
     variedade_galeria = models.ForeignKey(Variedade, on_delete=models.CASCADE, related_name='variedade_galerias')
-    imagem_variedade = models.ImageField(upload_to=renomear_uploaded_variedade)
+    imagem_variedade = CloudinaryField('linkagro_categorias/produtos/variedade_galeria/')
     default = models.BooleanField(default=False)  # Inicialmente, definimos como False
     activo = models.BooleanField(default=True)
 

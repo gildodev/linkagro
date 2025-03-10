@@ -60,11 +60,19 @@ class linkagro:
         })
 
 
-    def panina_de_pesquisa(request):
+    def pagina_de_pesquisa(request):
         # variedade=get_object_or_404(Variedade, slug_pesquisa=q)
-        
+        if request.method == "GET":
+            q=request.GET.get('q', '')
+            regiao=request.GET.get('regiao', '')
+            distrito=request.GET.get('distrito', '')
+            provincia=request.GET.get('provincia', '')
+
         return render(request, "linkagro/pagina_pesquisa.html", context={
-            "variedade": "",
+            "q": q,
+            "regiao": regiao,
+            "provincia": provincia,
+            "distrito": distrito,
         })
 
 

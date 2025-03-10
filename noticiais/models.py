@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models import *
 import os
 from django.utils.text import slugify
+import cloudinary
+from cloudinary.models import CloudinaryField
 # Create your models here.
 
 
@@ -16,7 +18,7 @@ def renomear_uploaded_file(instance, filename):
 class Blog(models.Model):
     titulo = models.CharField(max_length=100, unique=True)
     descricao = models.CharField(max_length=255, help_text="Digite uma breve descrição sobre a notícia...")
-    capa= models.ImageField(upload_to= renomear_uploaded_file)
+    capa= CloudinaryField('linkagro_noticiais/')
     slug_url = models.SlugField(max_length=255, unique=True, blank=True)
     corpo = models.TextField()
     data = models.DateField(db_index=True, auto_now_add=True)
