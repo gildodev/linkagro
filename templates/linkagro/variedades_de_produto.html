@@ -12,7 +12,7 @@
 
 <script>
     // Criação das variaveis
-    let regiaoID = null, provinciaID = null, distritoID = null, qualidade = null, ordenamento = null, verproduto=0, 
+    let regiaoID = null, provinciaID = null, distritoID = null, qualidade = null, ordenamento = null, verproduto=1, 
      total_produtos=0, pagina_actual=0, total_paginas=0, proxima_pagina=0, pagina_anterior=0, ha_prox_pag=false, ha_pag_ant=false;
 
 
@@ -47,12 +47,12 @@
         ordenarPor = new TomSelect("#ordenar", { create: false, sortField: "text", persist: false, placeholder: "Ordenar por...",});
 
         // Activar lista de produtos
-        new Swiper('.card-anuncio .anuncio-content', {
-            loop: true, // Habilita o loop
-            slidesPerView: 1, // Mostra 1 slide por vez
-            spaceBetween: 10, // Espaçamento entre slides
-            effect: "flip" // Efeito flip
-        });
+        // new Swiper('.card-anuncio .anuncio-content', {
+        //     loop: true, // Habilita o loop
+        //     slidesPerView: 1, // Mostra 1 slide por vez
+        //     spaceBetween: 10, // Espaçamento entre slides
+        //     effect: "flip" // Efeito flip
+        // });
 
 
         $(".menu-filtro-titulo").click(function(){
@@ -103,7 +103,7 @@
 
         verProduto.on("change", function () {
             verproduto = verProduto.getValue() || null;
-            aplicarFiltros();
+            loadDataPage(1)
         });
 
         $("#proxima-pagina").click(function(){
@@ -152,23 +152,12 @@
     function aplicarFiltros() {
         $('#loading-spinner').toggleClass("active")
         let filtrados=[];
-        if(verproduto==0){
-            filtrados = variedades_activas.filter(item => 
-                (regiaoID ? item.id_regiao == regiaoID : true) &&
-                (provinciaID ? item.id_provincia == provinciaID : true) &&
-                (distritoID ? item.id_distrito == distritoID : true) &&
-                (qualidade ? item.qualidade_variedade == qualidade : true)
-            );
-
-        }else{
-            
-            filtrados = variedades_proximas_colheitas.filter(item => 
-                (regiaoID ? item.id_regiao == regiaoID : true) &&
-                (provinciaID ? item.id_provincia == provinciaID : true) &&
-                (distritoID ? item.id_distrito == distritoID : true) &&
-                (qualidade ? item.qualidade_variedade == qualidade : true)
-            );
-        }
+        filtrados = variedades_activas.filter(item => 
+            (regiaoID ? item.id_regiao == regiaoID : true) &&
+            (provinciaID ? item.id_provincia == provinciaID : true) &&
+            (distritoID ? item.id_distrito == distritoID : true) &&
+            (qualidade ? item.qualidade_variedade == qualidade : true)
+        );
         
         // Aplicar ordenamento
         if (ordenamento) {
@@ -190,58 +179,12 @@
 
         renderLista(filtrados);
         $('#loading-spinner').toggleClass("active")
-    }
-    
-
-    function aplicarFiltrosPaginacao() {
-        $('#loading-spinner').toggleClass("active")
-        let filtrados=[];
-        if(verproduto==0){
-            filtrados = variedades_activas.filter(item => 
-                (regiaoID ? item.id_regiao == regiaoID : true) &&
-                (provinciaID ? item.id_provincia == provinciaID : true) &&
-                (distritoID ? item.id_distrito == distritoID : true) &&
-                (qualidade ? item.qualidade_variedade == qualidade : true)
-            );
-
-        }else{
-            
-            filtrados = variedades_proximas_colheitas.filter(item => 
-                (regiaoID ? item.id_regiao == regiaoID : true) &&
-                (provinciaID ? item.id_provincia == provinciaID : true) &&
-                (distritoID ? item.id_distrito == distritoID : true) &&
-                (qualidade ? item.qualidade_variedade == qualidade : true)
-            );
-        }
-        
-        // Aplicar ordenamento
-        if (ordenamento) {
-            switch (ordenamento) {
-                case "nome_asc":
-                    filtrados.sort((a, b) => a.nome_variedade.localeCompare(b.nome_variedade));
-                    break;
-                case "nome_desc":
-                    filtrados.sort((a, b) => b.nome_variedade.localeCompare(a.nome_variedade));
-                    break;
-                case "preco_alto":
-                    filtrados.sort((a, b) => parseFloat(b.preco_por_unidade) - parseFloat(a.preco_por_unidade));
-                    break;
-                case "preco_baixo":
-                    filtrados.sort((a, b) => parseFloat(a.preco_por_unidade) - parseFloat(b.preco_por_unidade));
-                    break;
-            }
-        }
-
-        renderListaPaginacao(filtrados);
-        $('#loading-spinner').toggleClass("active")
-    }
-    
+    }    
 
 
     function loadData() {
         let slug_produto = $('#slug_produto').val();
         $('#loading-spinner').toggleClass("active")
-
 
         Promise.all([
             $.get(`http://localhost:3000/api/variedades-produto/${slug_produto}/`),
@@ -265,7 +208,6 @@
 
             // Popular dropdowns
             selectRegiao.clear();
-            selectRegiao.addOption({ value: "", text: "Todas" });
             regioes.forEach(regiao => {
                 selectRegiao.addOption({ value: regiao.id, text: regiao.regiao });
             });
@@ -283,6 +225,7 @@
         }).catch(error => {
             console.error("Erro ao carregar os dados:", error);
             alert("Erro ao carregar os dados. Verifique a API!");
+            renderLista([])
             $('#loading-spinner').toggleClass("active")
         });
         
@@ -321,7 +264,7 @@
 
 
         Promise.all([
-            $.get(`http://localhost:3000/api/variedades-produto/${slug_produto}/?page=${pagina}`),
+            $.get(`http://localhost:3000/api/variedades-produto/${slug_produto}/?page=${pagina}&periodo=${verproduto}`),
         ]).then(([produtosData]) => {
             variedades_activas = produtosData.variedades_activas;
             total_produtos=produtosData.total_produtos;
@@ -341,6 +284,7 @@
         }).catch(error => {
             console.error("Erro ao carregar os dados:", error);
             alert("Erro ao carregar os dados. Verifique a API!");
+            renderLista([])
             $('#loading-spinner').toggleClass("active")
         });
         
@@ -394,7 +338,7 @@
                                             <div class="localizacao limite-texto-1">
                                                 <span><i class="fa fa-location-dot"></i></span><span> ${variedade.distrito}, ${variedade.provincia}</span>
                                             </div>
-                                            ${verproduto==1?`<div class="epoca-colheita  text-success">
+                                            ${verproduto==0?`<div class="epoca-colheita  text-success">
                                                 <span><i class="fa fa-calendar pe-2"></i></span><span> ${variedade.data_inicio_colheita}</span>
                                             </div>`:``}
                                             
@@ -412,70 +356,6 @@
     }
 
 
-    function renderListaPaginacao(items) {
-       
-        if (items.length == 0){
-            $("#variedades-container").append(`
-                <div class="col-12 mb-3 animate__animated animate__zoomIn z-index-0">
-                    <div class="message-container">
-                        <h1>Ops! Nada encontrado...</h1>
-                        <p>Infelizmente, não temos produtos disponíveis neste momento. Mas não desanime!</p>
-                    
-                        <div class="drawer-container shadow">
-                            <div class="drawer"></div>
-                        </div>
-                    
-                        <div class="empty-msg">Produtos Indisponíveis!</div>
-                    </div>
-                </div>`
-            );
-
-            $('#btn-continuar-vendo-itens').addClass("d-none")
-            
-        }else{
-            
-            items.forEach(function(variedade) {
-                $("#variedades-container").append(`
-                    <div class="col-md-4 col-12 mb-3 animate__animated animate__zoomIn z-index-0">
-                        <a href="${variedade.detalhes_link}" title="${variedade.nome_variedade}">
-                            <div class="card-variedade">
-                                <div class="position-relative">
-                                    <div class="card-variedade-imagem p-2">
-                                        <img src="${variedade.imagem_default}" class="img-fluid" alt="${variedade.nome_variedade}">
-                                    </div>
-
-                                    <div class="card-variedade-conteudo mb-2">
-                                        <div class="card-variedade-mais-info px-2 pb-2">
-                                            <h5 class="card-variedade-titulo limite-texto-1">${variedade.nome_variedade} </h5>
-                                            <div class="precos text-primary">
-                                                <h3>${variedade.preco_por_unidade} MT
-                                                    <span>/ ${variedade.quantidade_variedade}${variedade.unidade_variedade}</span>
-                                                </h3>
-                                            </div>
-
-                                            <div class="qualidade d-none">
-                                                <span>Qualidade:</span><strong> ${variedade.qualidade_variedade}</strong>
-                                            </div>
-
-                                            <div class="localizacao limite-texto-1">
-                                                <span><i class="fa fa-location-dot"></i></span><span> ${variedade.distrito}, ${variedade.provincia}</span>
-                                            </div>
-                                            ${verproduto==1?`<div class="epoca-colheita  text-success">
-                                                <span><i class="fa fa-calendar pe-2"></i></span><span> ${variedade.data_inicio_colheita}</span>
-                                            </div>`:``}
-                                            
-
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </div>`
-                );
-            });
-        }
-    }
 
     // Verificar se a página inteira (com imagens, scripts, etc.) foi carregada
     $(window).on('load', function() {
@@ -489,7 +369,7 @@
 <input type="hidden" name="slug_produto" value="{{produto.slug_produto}}" id="slug_produto">
 <div class="container my-3">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 mb-3 d-none d-md-block">
             <div class="card-menu animate__animated animate__zoomIn mb-2">
                 <div class="card-menu-header rounded-top-3 px-2 active">
                     <h3 class="text-gradient">Filtro</h3>
@@ -500,8 +380,8 @@
                 </div>
 
                 <ul class="menu-filtro pb-2">
-                    <li class="menu-filtro-item active">
-                        <span class="menu-filtro-titulo active">Categorias <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                    <li class="menu-filtro-item">
+                        <span class="menu-filtro-titulo ">Categorias <span class="angle"><i class="fa fa-angle-right"></i></span></span>
                         <ul class="submenu-filtro">
                             {% for categ in categorias %}
                             <li class="submenu-filtro-item"><a href="{% url 'linkagro_produtos_categoria' categ.slug_categoria %}" class="submenu-filtro-link">{{categ}}</a></li>
@@ -510,7 +390,7 @@
                         </ul>
                     </li>
                     <li class="menu-filtro-item">
-                        <span class="menu-filtro-titulo active">Produtos <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                        <span class="menu-filtro-titulo ">Produtos <span class="angle"><i class="fa fa-angle-right"></i></span></span>
                         <ul class="submenu-filtro">
                             {% for produto in produtos %}
                             <li class="submenu-filtro-item"><a href="{% url 'linkagro_variedade_produto' produto.slug_produto %}" class="submenu-filtro-link">{{produto}} ({{produto.variedades_activas}})</a></li>
@@ -519,7 +399,7 @@
                     </li>
 
                     <li class="menu-filtro-item">
-                        <span class="menu-filtro-titulo active">Qualidade <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                        <span class="menu-filtro-titulo ">Qualidade <span class="angle"><i class="fa fa-angle-right"></i></span></span>
                         <div class="submenu-filtro px-2">
                             <select name="qualidade" id="qualidade" autocomplete="off" class="">
                                 <option value="">Filtrar por qualidade</option>
@@ -531,7 +411,7 @@
                     </li>
 
                     <li class="menu-filtro-item">
-                        <span class="menu-filtro-titulo active">Localização <span class="angle"><i class="fa fa-angle-right"></i></span></span>
+                        <span class="menu-filtro-titulo ">Localização <span class="angle"><i class="fa fa-angle-right"></i></span></span>
                         <div class="submenu-filtro px-2">
                             <div class="row">
                                 <div class="col-md-12">
@@ -591,19 +471,14 @@
                         <div class="card-lista-produtos-header shadow p-2  bg-white rounded-3 ">
                             <div class="row">
                                 <div class="col-md-4 mb-2 ">
-                                    <div class="ordqualver d-none">
+                                    <div class="ordqualver">
                                         <label for="ver">Ver: </label> 
                                         <select name="ver" id="ver" class="" autocomplete="off">
-                                            <option value="0">produtos activos</option>
-                                            <option value="1">próximas colheitas</option>
+                                            <option value="1">produtos activos</option>
+                                            <option value="0">próximas colheitas</option>
                                         </select>
                                     </div>
-
-                                    <span>Total de produtos:</span>
-                                    <h4 id="total-produtos">0</h4>
                                 </div>
-
-                                
 
                                 <div class="col-md-4 mb-2">
                                     <div class="ordqualver">
@@ -616,6 +491,11 @@
                                             <option value="preco_baixo">Preço (Menor)</option>
                                         </select>
                                     </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <span>Total de produtos:</span>
+                                    <h3 id="total-produtos" class="text-warning ">0</h3>
                                 </div>
 
                             </div>

@@ -86,12 +86,14 @@ class linkagro:
             regiao=request.GET.get('regiao', '')
             distrito=request.GET.get('distrito', '')
             provincia=request.GET.get('provincia', '')
+            periodo_pesquisa=request.GET.get('periodo', 1)
 
         return render(request, "linkagro/pagina_pesquisa.html", context={
             "q": q,
             "regiao": regiao,
             "provincia": provincia,
             "distrito": distrito,
+            "periodo_colheita" : periodo_pesquisa,
         })
 
 

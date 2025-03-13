@@ -1,31 +1,38 @@
 
-<div class="sessao-area-pesquisa-conteudo bg-white shadow">
+<div class="sessao-area-pesquisa-conteudo bg-white shadow sticky-top">
     <div class="subnav-menu p-2 ">
         <form action="{% url 'linkagro_pesquisa' %}" class="p-2" method="get">
             <div class="row">
                 <div class="col-md-3">
-                    <label>Pesquisar...</label>
-                    <input type="text" name="q" placeholder="Pesquisar produto..." class="form-control shadow-none border-1 border-secondary" required>
+                    <label>Pesquisar</label>
+                    <input type="text" name="q" placeholder="Pesquisar produto..." required>
                 </div>
 
                 <span class="ver-opcoes-avancadas d-md-none text-center">Ver opções avançadas</span>
                 
                 <div class="col-md-9 aplicar-opcoes-avancadas d-none d-md-block" id="aplicar-opcoes-avancadas">
                     <div class="row">
-                        <div class="col-md-4">
-                            <label>Selecione a região...</label>
+                        <div class="col-md-3">
+                            <label>Periodo de colheita</label>
+                            <select id="periodo-colheita" name="periodo" data-placeholder="periodo de colheita..." autocomplete="off">
+                                <option value="1" selected>Colheitas activas</option>
+                                <option value="0">Próximas colheitas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Selecione a região</label>
                             <select id="selecione-regiao" name="regiao" data-placeholder="Selecione a região..." class="d-flex" autocomplete="off">
                                 <option value="">Todas</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label>Selecione a província...</label>
+                        <div class="col-md-3">
+                            <label>Selecione a província</label>
                             <select id="selecione-provincia" name="provincia" data-placeholder="Selecione a província..." autocomplete="off" disabled>
                                 <option value="">Todas</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label>Selecione distrito...</label>
+                        <div class="col-md-3">
+                            <label>Selecione distrito</label>
                             <select id="selecione-distrito" name="distrito" data-placeholder="Selecione distrito..." autocomplete="off" disabled>
                                 <option value="">Todos</option>
                             </select>
@@ -57,12 +64,15 @@
     let regiaoSelecionada = null
     let provinciaSelecionada = null
     let distritoSelecionada = null
+    let proximaColheita = null
 
 
    $(document).ready(function () {
         regiaoSelecionada = new TomSelect("#selecione-regiao", { create: false, sortField: "text", persist: false, });
         provinciaSelecionada = new TomSelect("#selecione-provincia", { create: false, sortField: "text", persist: false,});
         distritoSelecionada = new TomSelect("#selecione-distrito", { create: false, sortField: "text", persist: false, });
+        proximaColheita = new TomSelect("#periodo-colheita", { create: false, sortField: "text", persist: false, });
+
         loadData();
 
         $(".ver-opcoes-avancadas").click(function () {
@@ -80,7 +90,6 @@
 
             // Popular as regiões
             regiaoSelecionada.clear();
-            regiaoSelecionada.addOption({ value: "", text: "Todas" , selectOnTab: true});
             regioes.forEach(regiao => {
                 regiaoSelecionada.addOption({ value: regiao.id, text: regiao.regiao });
             });

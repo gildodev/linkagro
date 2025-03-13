@@ -135,7 +135,7 @@ def deletar_localidade(request, localidade_id: int):
 
 # todos os produtos da categoria
 @api.get("produtos-categoria/{slug_categoria}/")
-def get_produto_categoria(request, slug_categoria: str, page: int = 1):
+def get_produto_categoria(request, slug_categoria: str, page: int = 1, periodo: int=1):
     # Obter o produto com base no slug_produto
     categoria = get_object_or_404(Categoria, slug_categoria=slug_categoria)
     # Definindo a data atual
@@ -144,10 +144,11 @@ def get_produto_categoria(request, slug_categoria: str, page: int = 1):
     # Filtrar as variedades com base nas condições
     variedades_ativas = Variedade.objects.filter(
         produto_variedade__categoria_produto=categoria,
-        activo=True,
-        data_inicio_colheita__lte=data_atual,  # Variedades com colheita iniciando ou antes da data atual
-        data_fim_colheita__gte=data_atual  # E a data de fim da colheita ainda não passou
+        activo=True
     )
+
+    # Aplicando os filtros corretamente
+    variedades_ativas = variedades_ativas.filter(data_inicio_colheita__lte=data_atual, data_fim_colheita__gte=data_atual) if periodo == 1 else variedades_ativas.filter(data_inicio_colheita__gt=data_atual).order_by("data_inicio_colheita")
 
     # Cria um Paginator com 10 veículos por página
     paginator = Paginator(variedades_ativas, 1)
@@ -157,9 +158,7 @@ def get_produto_categoria(request, slug_categoria: str, page: int = 1):
 
     variedades_lista_activa=[]
 
-
     for variedade in pagina:
-        
         variedades_lista_activa.append(
             {
                 "id": variedade.id,
@@ -213,6 +212,7 @@ def get_produto_categoria(request, slug_categoria: str, page: int = 1):
         "pagina_anterior": pagina.previous_page_number() if pagina.has_previous() else False,
         "ha_proxima_pagina": pagina.has_next(),  # Se há próxima página
         "ha_pagina_anterior": pagina.has_previous(),  # Se há página anterior
+        "periodo": periodo,
     }
 
 
@@ -289,7 +289,7 @@ def get_produto_categoria_proximas_colheitas(request, slug_categoria: str):
 
 # Variedades de produtos
 @api.get("variedades-produto/{slug_produto}/")
-def get_produto_varirdades(request, slug_produto: str, page: int = 1):
+def get_produto_varirdades(request, slug_produto: str, page: int = 1, periodo: int=1):
 
     # Definindo a data atual
     data_atual = timezone.now().date()
@@ -300,10 +300,11 @@ def get_produto_varirdades(request, slug_produto: str, page: int = 1):
     
     variedades_ativas = Variedade.objects.filter(
         produto_variedade=produto,
-        activo=True,
-        data_inicio_colheita__lte=data_atual,  # Variedades com colheita iniciando ou antes da data atual
-        data_fim_colheita__gte=data_atual  # E a data de fim da colheita ainda não passou
+        activo=True
     )
+
+    # Aplicando os filtros corretamente
+    variedades_ativas = variedades_ativas.filter(data_inicio_colheita__lte=data_atual, data_fim_colheita__gte=data_atual) if periodo == 1 else variedades_ativas.filter(data_inicio_colheita__gt=data_atual).order_by("data_inicio_colheita")
 
 
     # Cria um Paginator com 10 veículos por página
@@ -370,6 +371,7 @@ def get_produto_varirdades(request, slug_produto: str, page: int = 1):
         "pagina_anterior": pagina.previous_page_number() if pagina.has_previous() else False,
         "ha_proxima_pagina": pagina.has_next(),  # Se há próxima página
         "ha_pagina_anterior": pagina.has_previous(),  # Se há página anterior
+        "periodo": periodo,
     }
 
 
@@ -396,6 +398,7 @@ def get_todos_enderecos_geograficos_produtores(request):
 def pesquisar_variedades(
         request, 
         page: Optional[int] =1,
+        periodo: Optional[int] =1,
         q: Optional[str] = None, 
         regiao: Optional[str] = None, 
         provincia: Optional[str] = None, 
@@ -405,9 +408,11 @@ def pesquisar_variedades(
     # Definindo a data atual
     data_atual = timezone.now().date()
 
-    variedades_ativas = Variedade.objects.filter(activo=True, data_inicio_colheita__lte=data_atual, data_fim_colheita__gte=data_atual)
+    variedades_ativas = Variedade.objects.filter(activo=True)
 
     # Aplicando os filtros corretamente
+    variedades_ativas = variedades_ativas.filter(data_inicio_colheita__lte=data_atual, data_fim_colheita__gte=data_atual) if periodo == 1 else variedades_ativas.filter(data_inicio_colheita__gt=data_atual).order_by("data_inicio_colheita")
+
     if q:
         variedades_ativas = variedades_ativas.filter(nome_variedade__icontains=q)
     if regiao:

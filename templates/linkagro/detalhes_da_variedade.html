@@ -1,6 +1,8 @@
 {% extends "base/base.html" %}
 {% load static%}
 
+{% block title %} Linkagro - {{variedade}} {% endblock title %}
+
 {% block content %}
 <style>
 .detalhe-produto {
@@ -92,91 +94,144 @@
 
 <section class="container my-3">
     <!--breadcrumbs area start-->
-    <div class="breadcrumbs_area">
-        <div class="container">   
-            <div class="row">
-                <div class="col-12">
-                    <div class="breadcrumb_content">
-                        <ul>
-                            <li><a href="index.html">Página Inicial</a></li>
-                            <li>{{variedade.nome_variedade}}</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>         
+    <div class="breadcrumbs_area h-100 p-0">
+        <div class="breadcrumb_content">
+            <ul class="m-0 p-0">
+                <li><a href="{% url 'linkagro_home'  %}">Página Inicial</a></li>
+                <li>{{variedade.nome_variedade}}</li>
+            </ul>
+        </div>        
     </div>
     <!--breadcrumbs area end-->
 
     
-    <div class="row">
-        <div class="col-md-5">
-            <div class="detalhe-produto shadow rounded-5">
-                <!-- Linha de conexão -->
-                <svg class="linha-conexao d-none" viewBox="0 0 400 400">
-                    <path id="linha-svg" d=""></path>
-                </svg>
-            
-                <!-- Imagem central -->
-                <div class="imagem-centralizado-escolhido animate__animated animate__zoomIn">
-                    <img id="imagem-destaque" src="{{variedade.imagem_variedade.url}}" alt="Produto Principal">
-                </div>
-            
-                <!-- Imagens circulares ao redor -->
-                <div class="outras-imagem-circulares" id="imagens-container">
-                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 1" onclick="trocarImagem(this)">
-                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 2" onclick="trocarImagem(this)">
-                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 3" onclick="trocarImagem(this)">
-                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 4" onclick="trocarImagem(this)">
-                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 5" onclick="trocarImagem(this)">
-                    <img src="{{variedade.imagem_variedade.url}}" alt="Produto 6" onclick="trocarImagem(this)">
+    <div class="p-2 shadow rounded-3 bg-white filtro-linkagro mt-3">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="detalhe-produto h-100">
+                    <!-- Linha de conexão -->
+                    <svg class="linha-conexao d-none" viewBox="0 0 400 400">
+                        <path id="linha-svg" d=""></path>
+                    </svg>
+                
+                    <!-- Imagem central -->
+                    <div class="imagem-centralizado-escolhido animate__animated animate__zoomIn">
+                        <img id="imagem-destaque" src="{{variedade.imagem_variedade.url}}" alt="Produto Principal">
+                    </div>
+                
+                    <!-- Imagens circulares ao redor -->
+                    <div class="outras-imagem-circulares" id="imagens-container">
+                        <img src="{{variedade.imagem_variedade.url}}" alt="Produto 1" onclick="trocarImagem(this)">
+                        <img src="{{variedade.imagem_variedade.url}}" alt="Produto 2" onclick="trocarImagem(this)">
+                        <img src="{{variedade.imagem_variedade.url}}" alt="Produto 3" onclick="trocarImagem(this)">
+                        <img src="{{variedade.imagem_variedade.url}}" alt="Produto 4" onclick="trocarImagem(this)">
+                        <img src="{{variedade.imagem_variedade.url}}" alt="Produto 5" onclick="trocarImagem(this)">
+                        <img src="{{variedade.imagem_variedade.url}}" alt="Produto 6" onclick="trocarImagem(this)">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-7">
-            <div class="descricao-variedade p-2 filtro-linkagro bg-white rounded-3">
-                <div class="sessao-titulo-variedade  p-2 ">
-                    <h3 class="text-primary-linkagro">{{variedade.nome_variedade}}</h3>
-                    <span class="text-muted">{{variedade.descricao_variedade}} Descrição do produto</span>
 
-                </div>
 
-                <div class="informacoes-complementares p-2 border-top">
-                    <div class="enderenco">
-                        <span><i class="fa fa-location-dot"></i> {{variedade.distrito.distrito}}, {{variedade.provincia.provincia}}</span>
+            <div class="col-md-7">
+                <div class="descricao-variedade p-2">
+                    <div class="sessao-titulo-variedade  p-2 ">
+                        <h3 class="text-primary-linkagro">{{variedade.nome_variedade}}</h3>
+                        <span class="text-muted">{{variedade.descricao_variedade}} Descrição do produto</span>
                     </div>
-                    <div class="preco d-flex  flex-wrap gap-2 align-items-center h-100 w-100">
-                        <h4>Preço:</h4>
-                        <div><h3 class="text-dark">{{variedade.preco_por_unidade}} MT/{{variedade.quantidade_variedade}}{{variedade.unidade_variedade}}</h3></div>
+    
+                    <div class="informacoes-complementares p-2 border-top">
+                        <div class="enderenco">
+                            <span><i class="fa fa-location-dot"></i> {{variedade.distrito.distrito}}, {{variedade.provincia.provincia}}</span>
+                        </div>
+                        <div class="preco d-flex  flex-wrap gap-2 align-items-center h-100 w-100">
+                            <h3 class="text-dark">{{variedade.preco_por_unidade}} MT/{{variedade.quantidade_variedade}}{{variedade.unidade_variedade}}</h3>
+                        </div>
+    
+                        <div class="preco d-flex  flex-wrap gap-2 align-items-center h-100 w-100 d-none">
+                            <h4>Qualidade:</h4>
+                            <div><h3 class="text-dark">{{variedade.qualidade}}</h3></div>
+                        </div>
+                        
                     </div>
-
-                    <div class="preco d-flex  flex-wrap gap-2 align-items-center h-100 w-100">
-                        <h4>Qualidade:</h4>
-                        <div><h3 class="text-dark">{{variedade.qualidade}}</h3></div>
-                    </div>
-                    
-                </div>
-
-                <div class="">
-                    <div class="produtor">
-                        <img src="{{variedade.produtor_variedade.logotipo.url}}" alt="{{variedade.produtor_variedade}}">
-                        <div class="info-produtor">
-                            <h4 class="text-dark">{{variedade.produtor_variedade}}</h4>
-                            <span class="text-muted">{{variedade.produtor_variedade.distrito}}, {{variedade.produtor_variedade.provincia}}</span>
-                            <div class="group-button-actio d-block">
-                                <a href="tel:258850386545" class="text-primary"><i class="fa fa-phone"></i> +258850386545</a> 
-                            </div>
-                            <div class="group-button-actio d-block">
-                                <a href="https://wa.me/258850386545" class="text-primary"><i class="fab fa-whatsapp"></i> +258850386545</a>
+    
+                    <div class="">
+                        <div class="produtor">
+                            <img src="{{variedade.produtor_variedade.logotipo.url}}" alt="{{variedade.produtor_variedade}}">
+                            <div class="info-produtor">
+                                <h4 class="text-dark">{{variedade.produtor_variedade}}</h4>
+                                <span class="text-muted">{{variedade.produtor_variedade.distrito}}, {{variedade.produtor_variedade.provincia}}</span>
+                                <div class="group-button-actio d-block">
+                                    <a href="tel:258850386545" class="text-primary"><i class="fa fa-phone"></i> +258850386545</a> 
+                                </div>
+                                <div class="group-button-actio d-block">
+                                    <a href="https://wa.me/258850386545" class="text-primary"><i class="fab fa-whatsapp"></i> +258850386545</a>
+                                </div>
                             </div>
                         </div>
+                        
+                        
                     </div>
-                    
-                    
                 </div>
+    
             </div>
-
         </div>
+    </div>
+</section>
+
+
+<section class="container mb-3 d-none">
+    <h1 class="text-center">Serviços Disponíveis</h1>
+
+    <div class="row">
+        {% for variedade in outras_variedades %}
+        <div class="col-md-3 col-12 mb-3 animate__animated animate__zoomIn z-index-0">
+            <a href="{% url 'linkagro_detalhe_variedade' variedade.slug_variedade %}" title="{{variedade.nome_variedade}}">
+                <div class="card-variedade">
+                    <div class="position-relative">
+                        <div class="card-variedade-imagem p-2">
+                            <img src="{{variedade.imagem_variedade.url}}" class="img-fluid" alt="{{variedade.nome_variedade}}">
+                        </div>
+
+                        <div class="card-variedade-conteudo mb-2">
+                            <div class="card-variedade-mais-info px-2 pb-2">
+                                <h5 class="card-variedade-titulo limite-texto-1">{{variedade.nome_variedade}} </h5>
+                                <div class="precos text-primary">
+                                    <h3>{{variedade.preco_por_unidade}} MT
+                                        <span>/ {{variedade.quantidade_variedade}}{{variedade.unidade_variedade}}</span>
+                                    </h3>
+                                </div>
+
+                                <div class="qualidade d-none">
+                                    <span>Qualidade:</span><strong> {{variedade.qualidade_variedade}}</strong>
+                                </div>
+
+                                <div class="localizacao limite-texto-1">
+                                    <span><i class="fa fa-location-dot"></i></span><span> {{variedade.distrito}}, {{variedade.provincia}}</span>
+                                </div>
+                                
+                                
+
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty%}
+        <div class="col-12 mb-3 animate__animated animate__zoomIn z-index-0">
+            <div class="message-container">
+                <h1>Ops! Nada encontrado...</h1>
+                <p>Infelizmente, não temos produtos disponíveis neste momento. Mas não desanime!</p>
+            
+                <div class="drawer-container shadow">
+                    <div class="drawer"></div>
+                </div>
+            
+                <div class="empty-msg">Produtos Indisponíveis!</div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </section>
 
@@ -187,7 +242,7 @@
     <div class="row">
         {% for variedade in outras_variedades %}
         <div class="col-md-3 col-12 mb-3 animate__animated animate__zoomIn z-index-0">
-            <a href="{% url 'linkagro_detalhe_variedade' variedade.slug_variedade %}" title="{{variedade.nome_variedade}}">
+            <a href="{% url 'linkagro_detalhe_variedade' variedade.slug_variedade %}" target="_blank" title="{{variedade.nome_variedade}}">
                 <div class="card-variedade">
                     <div class="position-relative">
                         <div class="card-variedade-imagem p-2">
